@@ -1,0 +1,6 @@
+
+{
+  "name": "Digital Ledger",
+  "description": "A versatile spreadsheet-like web application for organizing data in customizable tables. Users can create multiple pages, define columns, and edit entries seamlessly.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,189 @@
+/* Import Tailwind base styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar styles */
+@layer utilities {
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background-color: rgba(243, 244, 246, 0.5);
+        border-radius: 10px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        border-radius: 10px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background-color: #9ca3af;
+    }
+}
+
+/* Web-specific styles */
+@media screen and (min-width: 768px) {
+    /* Optimize for web experience with more compact rows */
+    table tr td,
+    table tr th {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+        max-width: 200px !important;
+        width: fit-content !important;
+    }
+
+    /* Constrain table width for web view */
+    table {
+        width: 600px !important;
+        max-width: 90% !important;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    /* Add grid lines to table */
+    table tr td,
+    table tr th {
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Action column styles */
+    .action-column {
+        width: 40px !important;
+        max-width: 40px !important;
+        padding: 0 !important;
+        background-color: #1e40af; /* Dark blue background */
+    }
+
+    /* Remove the cell styling since we're only keeping the header button */
+    .add-button-cell {
+        background-color: transparent;
+        width: 40px !important;
+        padding: 0 !important;
+        max-width: 40px !important;
+    }
+
+    /* Style for the add button */
+    .add-button-cell button {
+        width: 100%;
+        height: 100%;
+        background: none;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* More rows visible on web */
+    .overflow-auto {
+        max-height: calc(100vh - 160px);
+    }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+    button,
+    [role="button"],
+    select,
+    input {
+        min-height: 36px;
+    }
+
+    /* Optimize row height for mobile */
+    table tr td,
+    table tr th {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+
+    /* Make text more readable on small screens */
+    table tr td {
+        font-size: 12px;
+    }
+
+    /* Better tap targets for cells */
+    table tr td {
+        min-height: 36px;
+    }
+
+    /* Optimize form controls for touch */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+        height: 36px;
+        font-size: 14px;
+    }
+
+    /* Adjust column widths for mobile */
+    .min-w-[320px] table th:first-child {
+        width: 40px !important;
+    }
+
+    /* Make the plus button in header more prominent */
+    header button:has(svg) {
+        min-width: 36px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Action column for mobile */
+    .action-column {
+        width: 32px !important;
+        max-width: 32px !important;
+        padding: 0 !important;
+    }
+
+    .add-button-cell {
+        background-color: #1e40af;
+        width: 32px !important;
+        max-width: 32px !important;
+    }
+}
+
+/* Define compact table styles for web view */
+.web-view-table tr td {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+    height: 28px !important;
+    max-width: 140px !important; /* Limit width of table cells */
+    width: fit-content !important; /* Make cells only as wide as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.web-view-table th {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    max-width: 140px !important; /* Limit width of table headers */
+    width: fit-content !important; /* Make headers only as wide as needed */
+}
+
+/* Prevent text zooming on mobile */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Fix for sticky positioning on iOS */
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+/* Add momentum scrolling for tables on iOS */
+.overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Make tap targets more accurate */
+td,
+th {
+    touch-action: manipulation;
+}
