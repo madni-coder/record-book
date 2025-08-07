@@ -35,7 +35,6 @@ const Header: React.FC<HeaderProps> = ({
                         />
                     </svg>
                 </button>
-                <h1 className="text-lg sm:text-xl font-bold">AI</h1>
                 <div className="h-8 w-px bg-white/25 hidden sm:block"></div>
                 <div className="flex items-center gap-2 sm:gap-3">
                     <DocumentIcon className="w-5 h-5 text-white/80" />

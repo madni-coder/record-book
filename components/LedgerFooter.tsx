@@ -4,9 +4,14 @@ import type { Column, Entry } from "../types";
 interface LedgerFooterProps {
     columns: Column[];
     entries: Entry[];
+    style?: React.CSSProperties; // <-- add style prop
 }
 
-const LedgerFooter: React.FC<LedgerFooterProps> = ({ columns, entries }) => {
+const LedgerFooter: React.FC<LedgerFooterProps> = ({
+    columns,
+    entries,
+    style,
+}) => {
     const [isWebView, setIsWebView] = useState(false);
 
     // Detect if we're in web view
@@ -46,6 +51,7 @@ const LedgerFooter: React.FC<LedgerFooterProps> = ({ columns, entries }) => {
                     ? "px-3 sm:px-4 py-1.5 sm:py-2"
                     : "px-4 sm:px-6 py-2 sm:py-3"
             } overflow-x-auto whitespace-nowrap`}
+            style={style} // <-- apply style prop
         >
             <div className="flex flex-wrap items-center gap-4 sm:gap-8">
                 {sums.map((sum) => (

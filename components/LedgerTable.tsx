@@ -570,24 +570,22 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
     };
 
     return (
-        <div
-            className="w-full border border-gray-700 rounded-lg overflow-hidden"
-            style={{ background: "#ffffe6" }}
-        >
+        <div className="w-full border border-gray-700 rounded-lg overflow-hidden">
             <div
                 ref={tableContainerRef}
                 className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 pb-1.5"
+                style={{ background: "#ffffe6" }} // <-- set table container bg
             >
                 <div className="min-w-full">
                     <table
                         className="w-full text-left text-gray-700 border-collapse table-fixed"
-                        style={{ background: "#ffffe6" }}
+                        style={{ background: "#ffffe6" }} // <-- set table bg
                     >
                         <thead
                             className={`bg-gray-100 text-gray-800 font-medium ${getFontSize(
                                 true
                             )}`}
-                            style={{ background: "#ffffe6" }}
+                            style={{ background: "#ffffe6" }} // <-- set header bg
                         >
                             <tr>
                                 {getDisplayedColumns().map((col, idx) => (
@@ -597,11 +595,12 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                         style={{
                                             width:
                                                 col.name === "Total Amount"
-                                                    ? "500px" // Increased width for Total Amount
+                                                    ? "500px"
                                                     : col.width
                                                     ? `${col.width}px`
                                                     : "auto",
                                             border: "1px solid #374151",
+                                            background: "#ffffe6", // <-- header cell bg
                                         }}
                                         className={`${getCellPadding(
                                             true
@@ -755,7 +754,10 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                     </th>
                                 ))}
                                 {/* "+" button always after "Total Amount" and any added columns */}
-                                <th className="p-0 bg-transparent border-none align-top">
+                                <th
+                                    className="p-0 bg-transparent border-none align-top"
+                                    style={{ background: "#ffffe6" }} // <-- plus column header bg
+                                >
                                     <button
                                         type="button"
                                         onClick={
@@ -769,15 +771,14 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                 </th>
                             </tr>
                         </thead>
-                        <tbody
-                            style={{ background: "#ffffe6" }}
-                        >
+                        <tbody>
                             {displayEntries.map((entry, index) => {
                                 const isRealEntry = entry.id > 0;
                                 return (
                                     <tr
                                         key={entry.id}
-                                        className={`bg-white border-b border-gray-700 last:border-b-0 hover:bg-gray-50 ${getRowHeight()}`}
+                                        className={`border-b border-gray-700 last:border-b-0 hover:bg-gray-50 ${getRowHeight()}`}
+                                        style={{ background: "#ffffe6" }} // <-- row bg
                                     >
                                         {getDisplayedColumns().map((col) => {
                                             if (col.type === "action") {
@@ -801,7 +802,8 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                 <td
                                                     key={col.id}
                                                     style={{
-                                                        border: "1px solid #374151", // dark grey border
+                                                        border: "1px solid #374151",
+                                                        background: "#ffffe6", // <-- cell bg
                                                     }}
                                                     className={`${getCellPadding()} border-r border-gray-700 ${
                                                         col.id === "col-sno"
