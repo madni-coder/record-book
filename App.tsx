@@ -3,7 +3,6 @@ import MainContent from "./components/MainContent";
 import Sidebar from "./components/Sidebar";
 import { INITIAL_PAGES } from "./constants";
 import type { Page } from "./types";
-
 function App() {
     const [pages, setPages] = useState<Page[]>(INITIAL_PAGES);
     const [activePageId, setActivePageId] = useState<string>(

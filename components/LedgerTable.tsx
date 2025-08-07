@@ -570,17 +570,24 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
     };
 
     return (
-        <div className="w-full border bg-white border-gray-700 rounded-lg overflow-hidden">
+        <div
+            className="w-full border border-gray-700 rounded-lg overflow-hidden"
+            style={{ background: "#ffffe6" }}
+        >
             <div
                 ref={tableContainerRef}
                 className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 pb-1.5"
             >
                 <div className="min-w-full">
-                    <table className="w-full text-left text-gray-700 border-collapse table-fixed">
+                    <table
+                        className="w-full text-left text-gray-700 border-collapse table-fixed"
+                        style={{ background: "#ffffe6" }}
+                    >
                         <thead
                             className={`bg-gray-100 text-gray-800 font-medium ${getFontSize(
                                 true
                             )}`}
+                            style={{ background: "#ffffe6" }}
                         >
                             <tr>
                                 {getDisplayedColumns().map((col, idx) => (
@@ -762,7 +769,9 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody
+                            style={{ background: "#ffffe6" }}
+                        >
                             {displayEntries.map((entry, index) => {
                                 const isRealEntry = entry.id > 0;
                                 return (

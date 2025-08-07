@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({
     onAddColumn,
 }) => {
     return (
-        <header className="h-14 sm:h-16 bg-slate-900 text-white flex items-center justify-between px-4 sm:px-6 shadow-md z-10 flex-shrink-0">
+        <header className="h-14 sm:h-16 bg-gradient-to-r from-[#2A7B9B] via-[#57C785] to-[#EDDD53] text-white flex items-center justify-between px-4 sm:px-6 shadow-md z-10 flex-shrink-0">
             <div className="flex items-center gap-2 sm:gap-4">
                 <button
                     onClick={toggleSidebar}
