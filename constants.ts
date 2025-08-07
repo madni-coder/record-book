@@ -28,7 +28,7 @@ export const INITIAL_PAGES: Page[] = [
             },
             // No changes needed here. Render the "+" button in your table header UI after the last column.
         ],
-        entries: Array(50)
+        entries: Array(10)
             .fill(0)
             .map((_, index) => ({
                 id: index + 1,

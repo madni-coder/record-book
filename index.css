@@ -27,46 +27,64 @@
 
 /* Web-specific styles */
 @media screen and (min-width: 768px) {
-    /* Optimize for web experience with more compact rows */
-    table tr td,
-    table tr th {
-        padding-top: 4px !important;
-        padding-bottom: 4px !important;
-        max-width: 200px !important;
-        width: fit-content !important;
-    }
-
-    /* Constrain table width for web view */
     table {
-        width: 600px !important;
-        max-width: 90% !important;
+        width: 900px !important; /* increased width */
+        max-width: 100% !important;
         border-collapse: collapse;
         border-spacing: 0;
+        border-color: #a8a8a8 !important;
+        margin-left: 0 !important; /* left align */
     }
 
-    /* Add grid lines to table */
-    table tr td,
+    table tr th,
+    table tr td {
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        font-size: 20px !important;
+        max-width: 300px !important; /* increased max-width */
+        width: 220px !important; /* increased width */
+        border: 2.5px solid #a8a8a8 !important;
+        text-align: left !important;
+    }
+
+    /* S.No column width and visibility for web view */
+    table th:nth-child(1),
+    table td:nth-child(1) {
+        min-width: 80px !important;
+        max-width: 100px !important;
+        width: 80px !important;
+        text-align: center !important;
+        color: #1e293b !important;
+        font-weight: bold !important;
+        background: #f3f4f6 !important;
+        /* Prevent text truncation for S.No */
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+    }
+
     table tr th {
-        border: 1px solid #e5e7eb;
+        background-color: #f3f4f6;
+        font-weight: bold;
+        color: #1e293b;
     }
 
-    /* Action column styles */
     .action-column {
-        width: 40px !important;
-        max-width: 40px !important;
+        width: 56px !important;
+        max-width: 56px !important;
         padding: 0 !important;
-        background-color: #1e40af; /* Dark blue background */
+        background-color: #1e40af;
     }
 
-    /* Remove the cell styling since we're only keeping the header button */
     .add-button-cell {
         background-color: transparent;
-        width: 40px !important;
+        width: 56px !important;
         padding: 0 !important;
-        max-width: 40px !important;
+        max-width: 56px !important;
     }
 
-    /* Style for the add button */
     .add-button-cell button {
         width: 100%;
         height: 100%;
@@ -76,12 +94,28 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 28px !important;
     }
 
-    /* More rows visible on web */
     .overflow-auto {
         max-height: calc(100vh - 160px);
     }
+}
+
+/* Remove compact table styles for web view */
+.web-view-table tr td,
+.web-view-table th {
+    /* Remove compact styles */
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    font-size: 20px !important;
+    height: 40px !important;
+    max-width: 300px !important; /* increased max-width */
+    width: 220px !important; /* increased width */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 2.5px solid #a8a8a8 !important;
 }
 
 /* Mobile-specific styles */
@@ -98,15 +132,41 @@
     table tr th {
         padding-top: 6px !important;
         padding-bottom: 6px !important;
+        min-width: 140px !important; /* wider columns */
+        max-width: 200px !important; /* wider columns */
+        width: 140px !important; /* wider columns */
+        box-sizing: border-box;
+        border: 2.5px solid #a8a8a8 !important;
+    }
+
+    /* S.No column width and visibility for mobile view */
+    table th:nth-child(1),
+    table td:nth-child(1) {
+        min-width: 60px !important;
+        max-width: 80px !important;
+        width: 60px !important;
+        text-align: center !important;
+        color: #1e293b !important;
+        font-weight: bold !important;
+        background: #f3f4f6 !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+    }
+
+    /* Make "Item" and "Total Amount" columns same and wider */
+    table th:nth-child(2),
+    table td:nth-child(2),
+    table th:nth-child(3),
+    table td:nth-child(3) {
+        min-width: 140px !important;
+        max-width: 200px !important;
+        width: 140px !important;
     }
 
     /* Make text more readable on small screens */
     table tr td {
         font-size: 12px;
-    }
-
-    /* Better tap targets for cells */
-    table tr td {
         min-height: 36px;
     }
 
@@ -145,25 +205,25 @@
         width: 32px !important;
         max-width: 32px !important;
     }
-}
 
-/* Define compact table styles for web view */
-.web-view-table tr td {
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
-    height: 28px !important;
-    max-width: 140px !important; /* Limit width of table cells */
-    width: fit-content !important; /* Make cells only as wide as needed */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    /* Make table horizontally scrollable and fit container */
+    .responsive-table-container {
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 8px;
+    }
 
-.web-view-table th {
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    max-width: 140px !important; /* Limit width of table headers */
-    width: fit-content !important; /* Make headers only as wide as needed */
+    table {
+        min-width: 480px !important;
+        width: auto !important;
+        max-width: none !important;
+        border-collapse: collapse;
+        border-spacing: 0;
+        table-layout: fixed;
+        border-color: #a8a8a8 !important;
+    }
 }
 
 /* Prevent text zooming on mobile */

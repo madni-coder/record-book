@@ -20,21 +20,19 @@ const LedgerFooter: React.FC<LedgerFooterProps> = ({ columns, entries }) => {
     }, []);
 
     const sums = useMemo(() => {
-        const numberColumns = columns.filter((col) => col.type === "number");
-        if (numberColumns.length === 0) {
-            return [];
-        }
-
-        return numberColumns.map((col) => {
-            const total = entries.reduce((acc, entry) => {
-                const value = entry.data[col.id];
-                if (typeof value === "number") {
-                    return acc + value;
-                }
-                return acc;
-            }, 0);
-            return { name: col.name, total };
-        });
+        // Only show sum for columns whose type is "number"
+        return columns
+            .filter((col) => col.type === "number")
+            .map((col) => {
+                const total = entries.reduce((acc, entry) => {
+                    const value = entry.data[col.id];
+                    if (typeof value === "number") {
+                        return acc + value;
+                    }
+                    return acc;
+                }, 0);
+                return { name: col.name, total };
+            });
     }, [columns, entries]);
 
     if (sums.length === 0) {
