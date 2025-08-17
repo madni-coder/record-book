@@ -3,7 +3,6 @@ import MainContent from "./components/MainContent";
 import Sidebar from "./components/Sidebar";
 import { INITIAL_PAGES } from "./constants";
 import type { Page } from "./types";
-
 function App() {
     const [pages, setPages] = useState<Page[]>(INITIAL_PAGES);
     const [activePageId, setActivePageId] = useState<string>(
@@ -50,9 +49,8 @@ function App() {
                 { id: 12, data: { "col-a": "", "col-c": null } },
             ],
         };
-        console.log("Creating new page with columns:", newPage.columns);
         setPages((prev) => [...prev, newPage]);
-        setActivePageId(newPage.id);
+        setActivePageId(newPage.id); // <-- Switch to new page
         setSidebarOpen(false); // Close sidebar after selecting new page on mobile
     };
 
@@ -70,14 +68,11 @@ function App() {
     return (
         <div className="flex h-screen bg-gray-50 font-sans relative">
             <Sidebar
-                pages={pages}
+                pages={pages} // <-- Fix: pass real pages to Sidebar
                 activePageId={activePageId}
-                setActivePageId={(id) => {
-                    setActivePageId(id);
-                    setSidebarOpen(false); // Close sidebar after selection on mobile
-                }}
-                addPage={addPage}
-                deletePage={deletePage}
+                setActivePageId={setActivePageId}
+                addPage={addPage} // <-- Fix: pass real addPage
+                deletePage={deletePage} // <-- Fix: pass real deletePage
                 isOpen={sidebarOpen}
                 setIsOpen={setSidebarOpen}
             />
@@ -86,6 +81,10 @@ function App() {
                 activePage={activePage}
                 updatePage={updatePage}
                 toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+                pages={pages}
+                activePageId={activePageId}
+                setActivePageId={setActivePageId}
+                addPage={addPage}
             />
         </div>
     );

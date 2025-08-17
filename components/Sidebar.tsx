@@ -102,24 +102,24 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             <div
                 ref={sidebarRef}
-                className={`${sidebarClasses} bg-white border-r border-gray-200 flex flex-col flex-shrink-0`}
+                className={`${sidebarClasses} bg-gradient-to-b from-[#2A7B9B] to-[#57C785] flex flex-col flex-shrink-0`}
             >
-                <div className="p-4 border-b border-gray-200">
+                <div className="p-4 border-b border-white/10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-blue-500 rounded-full"></div>
-                            <h1 className="font-bold text-lg text-gray-800">
+                            <div className="w-8 h-8 bg-white/20 rounded-full"></div>
+                            <h1 className="font-bold text-lg text-white">
                                 My Business
                             </h1>
                         </div>
                         <div className="flex items-center">
                             <button
-                                className="md:hidden p-1.5 rounded-md text-gray-500 hover:bg-gray-100"
+                                className="md:hidden p-1.5 rounded-md text-white hover:bg-white/10"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <XIcon className="w-5 h-5" />
                             </button>
-                            <ChevronDownIcon className="w-5 h-5 text-gray-500 hidden md:block" />
+                            <ChevronDownIcon className="w-5 h-5 text-white hidden md:block" />
                         </div>
                     </div>
                 </div>
@@ -156,8 +156,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }}
                                 className={`flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                     activePageId === page.id
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "text-gray-700 hover:bg-gray-100"
+                                        ? "bg-white/20 text-white"
+                                        : "text-white/90 hover:bg-white/10"
                                 }`}
                             >
                                 <div className="flex items-center gap-3">
