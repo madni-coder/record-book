@@ -4,76 +4,106 @@ import Header from "./Header";
 import LedgerTable from "./LedgerTable";
 import LedgerFooter from "./LedgerFooter";
 import { SearchIcon, XIcon } from "./icons";
+import { INITIAL_PAGES } from "../constants";
 
-interface MainContentProps {
-    activePage: Page;
-    updatePage: (pageId: string, updatedPageData: Partial<Page>) => void;
-    toggleSidebar: () => void;
-}
-
-const MainContent: React.FC<MainContentProps> = ({
-    activePage,
-    updatePage,
-    toggleSidebar,
-}) => {
+const MainContent: React.FC = ({ toggleSidebar }) => {
+    const [sheets, setSheets] = useState<Page[]>(() =>
+        JSON.parse(JSON.stringify(INITIAL_PAGES))
+    );
+    const [activeSheetId, setActiveSheetId] = useState<string>(
+        INITIAL_PAGES[0].id
+    );
     const [searchTerm, setSearchTerm] = useState("");
     const [isMobile, setIsMobile] = useState(false);
     const [isWebView, setIsWebView] = useState(false);
 
-    // Check for mobile view and web context
     useEffect(() => {
         const checkEnvironment = () => {
-            const mobile = window.innerWidth < 640;
-            setIsMobile(mobile);
-
-            // Check if running in a standard browser
+            setIsMobile(window.innerWidth < 640);
             const isStandaloneBrowser =
                 navigator.userAgent.includes("Chrome") ||
                 navigator.userAgent.includes("Firefox") ||
                 navigator.userAgent.includes("Safari");
-
             setIsWebView(isStandaloneBrowser);
         };
-
         checkEnvironment();
         window.addEventListener("resize", checkEnvironment);
         return () => window.removeEventListener("resize", checkEnvironment);
     }, []);
 
-    const handleEntriesChange = (newEntries: Entry[]) => {
-        updatePage(activePage.id, { entries: newEntries });
+    const activeSheet = sheets.find((s) => s.id === activeSheetId) || sheets[0];
+
+    const updateSheet = (sheetId: string, updated: Partial<Page>) => {
+        setSheets((prev) =>
+            prev.map((s) => (s.id === sheetId ? { ...s, ...updated } : s))
+        );
     };
 
-    const handleColumnsChange = (newColumns: Column[]) => {
-        updatePage(activePage.id, { columns: newColumns });
-    };
-
-    const handleAddColumn = () => {
-        const newColId = `col-${Date.now()}`;
-        const newColumn: Column = {
-            id: newColId,
-            name: `Column ${String.fromCharCode(
-                65 + activePage.columns.length - 1
-            )}`, // -1 for S.No
-            type: "text",
-            width: 120,
-        };
-        const updatedColumns = [...activePage.columns, newColumn];
-
-        const updatedEntries = activePage.entries.map((entry) => ({
-            ...entry,
-            data: { ...entry.data, [newColId]: "" },
-        }));
-
-        updatePage(activePage.id, {
-            columns: updatedColumns,
-            entries: updatedEntries,
+    const handleAddSheet = () => {
+        setSheets((prevSheets) => {
+            const newSheetNum = prevSheets.length + 1;
+            const baseColumns = prevSheets[0]?.columns
+                ? JSON.parse(JSON.stringify(prevSheets[0].columns))
+                : [
+                      { id: "col-sno", name: "S.No", type: "text", width: 10 },
+                      {
+                          id: "col-1",
+                          name: "Column 1",
+                          type: "text",
+                          width: 50,
+                      },
+                      {
+                          id: "col-2",
+                          name: "Column 2",
+                          type: "text",
+                          width: 50,
+                      },
+                      {
+                          id: "col-3",
+                          name: "Column 3",
+                          type: "text",
+                          width: 50,
+                      },
+                  ];
+            const baseEntries = prevSheets[0]?.entries
+                ? JSON.parse(JSON.stringify(prevSheets[0].entries))
+                : Array(10)
+                      .fill(0)
+                      .map((_, i) => ({
+                          id: i + 1,
+                          data: { "col-1": "", "col-2": "", "col-3": "" },
+                      }));
+            const newSheet: Page = {
+                id: `sheet-${Date.now()}`,
+                name: `Sheet ${newSheetNum}`,
+                columns: baseColumns,
+                entries: baseEntries,
+            };
+            setActiveSheetId(newSheet.id);
+            return [...prevSheets, newSheet];
         });
     };
 
-    const filteredEntries = useMemo(() => {
-        let entriesToFilter = activePage.entries;
+    const handleDeleteSheet = (sheetId: string) => {
+        setSheets((prevSheets) => {
+            if (prevSheets.length === 1) return prevSheets;
+            const filtered = prevSheets.filter((s) => s.id !== sheetId);
+            if (activeSheetId === sheetId && filtered.length > 0) {
+                setActiveSheetId(filtered[0].id);
+            }
+            return filtered;
+        });
+    };
 
+    const handleEntriesChange = (newEntries: Entry[]) => {
+        updateSheet(activeSheet.id, { entries: newEntries });
+    };
+    const handleColumnsChange = (newColumns: Column[]) => {
+        updateSheet(activeSheet.id, { columns: newColumns });
+    };
+
+    const filteredEntries = useMemo(() => {
+        let entriesToFilter = activeSheet.entries;
         if (searchTerm) {
             entriesToFilter = entriesToFilter.filter((entry) =>
                 Object.values(entry.data).some((value) =>
@@ -83,9 +113,8 @@ const MainContent: React.FC<MainContentProps> = ({
                 )
             );
         }
-
         return entriesToFilter;
-    }, [activePage.entries, activePage.columns, searchTerm]);
+    }, [activeSheet.entries, activeSheet.columns, searchTerm]);
 
     return (
         <div
@@ -94,14 +123,20 @@ const MainContent: React.FC<MainContentProps> = ({
             }`}
         >
             <Header
-                activePage={activePage}
+                activePage={activeSheet}
+                pages={sheets.map((s, i) => ({
+                    ...s,
+                    name: `Sheet ${i + 1}`,
+                }))}
+                activePageId={activeSheetId}
+                setActivePageId={setActiveSheetId}
+                onAddPage={handleAddSheet}
+                onDeletePage={handleDeleteSheet}
                 toggleSidebar={toggleSidebar}
-                onAddColumn={handleAddColumn}
             />
-
             <div
                 className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4`}
-                style={{ background: "#ffffe6" }} // <-- filter/search bar bg
+                style={{ background: "#ffffe6" }}
             >
                 <div
                     className="relative w-full sm:w-auto"
@@ -136,7 +171,6 @@ const MainContent: React.FC<MainContentProps> = ({
                     )}
                 </div>
             </div>
-
             <div
                 className={`flex-1 overflow-auto ${
                     isWebView
@@ -145,17 +179,17 @@ const MainContent: React.FC<MainContentProps> = ({
                 }`}
             >
                 <LedgerTable
-                    columns={activePage.columns}
+                    columns={activeSheet.columns}
                     entries={filteredEntries}
                     setEntries={handleEntriesChange}
-                    allEntries={activePage.entries}
+                    allEntries={activeSheet.entries}
                     setColumns={handleColumnsChange}
                 />
             </div>
             <LedgerFooter
-                columns={activePage.columns}
+                columns={activeSheet.columns}
                 entries={filteredEntries}
-                style={{ background: "#ffffe6" }} // <-- total count/footer bg
+                style={{ background: "#ffffe6" }}
             />
         </div>
     );
