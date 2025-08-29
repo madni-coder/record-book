@@ -111,7 +111,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <h1 className="font-bold text-lg text-base-content">
                                 My Business
                             </h1>
-                            <button className="btn btn-info">Info</button>
 
                         </div>
                         <div className="flex items-center">

@@ -1,9 +1,7 @@
-/* Import Tailwind base styles */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Custom styles only - Tailwind imports moved to global.css */
 
 /* Custom scrollbar styles */
+@import "tailwindcss";
 @layer utilities {
     .scrollbar-thin::-webkit-scrollbar {
         width: 6px;
@@ -34,6 +32,8 @@
         border-spacing: 0;
         border-color: #a8a8a8 !important;
         margin-left: 0 !important; /* left align */
+        display: table;
+        table-layout: fixed;
     }
 
     table tr th,
@@ -42,8 +42,9 @@
         padding-bottom: 12px !important;
         padding-left: 20px !important;
         padding-right: 20px !important;
-        font-size: 20px !important;
+        font-size: 18px !important;
         max-width: 300px !important; /* increased max-width */
+        min-width: 180px !important; /* ensure minimum width */
         width: 220px !important; /* increased width */
         border: 2.5px solid #a8a8a8 !important;
         text-align: left !important;
@@ -67,6 +68,29 @@
     table tr th {
         font-weight: bold;
         color: #1e293b;
+        background-color: #f1f5f9;
+    }
+
+    table tr {
+        height: 40px !important;
+    }
+
+    tbody {
+        display: table-row-group;
+    }
+
+    tr {
+        display: table-row;
+    }
+
+    td,
+    th {
+        display: table-cell;
+    }
+
+    /* Add bottom border to all rows */
+    tr:not(:last-child) {
+        border-bottom: 2px solid #a8a8a8 !important;
     }
 
     .action-column {

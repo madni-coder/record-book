@@ -6,7 +6,25 @@ import LedgerFooter from "./LedgerFooter";
 import { SearchIcon, XIcon } from "./icons";
 import { INITIAL_PAGES } from "../constants";
 
-const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
+interface MainContentProps {
+    activePage: Page;
+    updatePage: (id: string, data: Partial<Page>) => void;
+    toggleSidebar: () => void;
+    pages: Page[];
+    activePageId: string;
+    setActivePageId: (id: string) => void;
+    addPage: (name: string) => void;
+}
+
+const MainContent: React.FC<MainContentProps> = ({
+    activePage,
+    updatePage,
+    toggleSidebar,
+    pages,
+    activePageId,
+    setActivePageId,
+    addPage,
+}) => {
     const [sheetsByPage, setSheetsByPage] = useState<Record<string, Page[]>>(
         () => {
             const savedSheetsByPage = localStorage.getItem("sheetsByPage");
@@ -123,9 +141,10 @@ const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
                 onAddPage={handleAddSheet}
                 onDeletePage={handleDeleteSheet}
                 toggleSidebar={toggleSidebar}
+                setPages={updateSheetsForPage}
             />
             <div
-                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4`}
+                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4 px-4`}
             >
                 <div
                     className="relative w-full sm:w-auto"
@@ -152,7 +171,7 @@ const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
                     )}
                 </div>
             </div>
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto px-4">
                 <LedgerTable
                     columns={activeSheet.columns}
                     entries={filteredEntries}

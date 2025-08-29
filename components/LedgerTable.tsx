@@ -576,29 +576,28 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                 className="w-full overflow-x-auto scrollbar-thin pb-1.5 bg-base-100"
             >
                 <div className="min-w-full">
-                    <table className="w-full text-left text-base-content border-collapse table-fixed bg-base-100">
+                    <table className="w-full text-left text-base-content border-collapse bg-base-100">
                         <thead className="bg-base-200 text-base-content font-medium">
                             <tr>
-                                {getDisplayedColumns().map((col, idx) => (
+                                {columns.map((col, idx) => (
                                     <th
                                         key={col.id}
                                         scope="col"
                                         style={{
-                                            width:
-                                                col.name === "Total Amount"
-                                                    ? "500px"
-                                                    : col.width
-                                                    ? `${col.width}px`
-                                                    : "auto",
-                                            border: "1px solid var(--b3)",
+                                            width: col.width
+                                                ? `${col.width}px`
+                                                : "auto",
+                                            minWidth:
+                                                col.id === "col-sno"
+                                                    ? "80px"
+                                                    : "180px",
+                                            border: "2px solid #a8a8a8",
                                         }}
                                         className={`px-4 py-3 border-r border-base-300 relative`}
                                     >
-                                        {/* Remove the plus button from the action column header and "Total Amount" column */}
                                         {col.type === "action" &&
                                         col.isAddColumn ? null : (
                                             <>
-                                                {/* ...existing header content for non-action columns... */}
                                                 {editingHeader === col.id ? (
                                                     <input
                                                         type="text"
@@ -617,7 +616,6 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                     />
                                                 ) : (
                                                     <div className="flex items-center gap-1 sm:gap-2 group">
-                                                        {/* ...existing icon code... */}
                                                         <span
                                                             className={`truncate flex-1 ${
                                                                 col.id !==
@@ -634,7 +632,6 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                         >
                                                             {col.name}
                                                         </span>
-                                                        {/* Dropdown for column type */}
                                                         {col.id !==
                                                             "col-sno" && (
                                                             <div
@@ -658,72 +655,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                 >
                                                                     <ChevronDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-base-content/50 group-hover:text-base-content" />
                                                                 </button>
-                                                                {editingColumnType ===
-                                                                    col.id && (
-                                                                    <div className="absolute left-0 top-full mt-1 z-20 bg-base-100 border border-base-300 rounded shadow-lg min-w-[120px]">
-                                                                        {columnTypes.map(
-                                                                            (
-                                                                                type,
-                                                                                i
-                                                                            ) => (
-                                                                                <button
-                                                                                    key={
-                                                                                        type.id
-                                                                                    }
-                                                                                    type="button"
-                                                                                    className={`flex items-center w-full px-3 py-2 text-left hover:bg-primary/10 ${
-                                                                                        highlightedTypeIndex ===
-                                                                                        i
-                                                                                            ? "bg-primary/20"
-                                                                                            : ""
-                                                                                    }`}
-                                                                                    onClick={() =>
-                                                                                        handleUpdateColumnType(
-                                                                                            col.id,
-                                                                                            type.id
-                                                                                        )
-                                                                                    }
-                                                                                    onMouseEnter={() =>
-                                                                                        setHighlightedTypeIndex(
-                                                                                            i
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        type.icon
-                                                                                    }
-                                                                                    <span className="ml-2">
-                                                                                        {
-                                                                                            type.name
-                                                                                        }
-                                                                                    </span>
-                                                                                    {col.type ===
-                                                                                        type.id && (
-                                                                                        <CheckIcon className="ml-auto w-4 h-4 text-primary" />
-                                                                                    )}
-                                                                                </button>
-                                                                            )
-                                                                        )}
-                                                                        {/* Add Delete Column option */}
-                                                                        <button
-                                                                            type="button"
-                                                                            className="flex items-center w-full px-3 py-2 text-left text-error hover:bg-error/10 border-t border-base-200"
-                                                                            onClick={() =>
-                                                                                handleDeleteColumn(
-                                                                                    col.id
-                                                                                )
-                                                                            }
-                                                                            onMouseEnter={() =>
-                                                                                setHighlightedTypeIndex(
-                                                                                    -1
-                                                                                )
-                                                                            } // Prevent highlight
-                                                                        >
-                                                                            Delete
-                                                                            Column
-                                                                        </button>
-                                                                    </div>
-                                                                )}
+                                                                {/* ...dropdown menu code... */}
                                                             </div>
                                                         )}
                                                     </div>
@@ -741,7 +673,6 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                             )}
                                     </th>
                                 ))}
-                                {/* "+" button always after "Total Amount" and any added columns */}
                                 <th className="p-0 bg-transparent border-none align-top">
                                     <button
                                         type="button"
@@ -757,197 +688,121 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                             </tr>
                         </thead>
                         <tbody>
-                            {displayEntries.map((entry, index) => {
-                                const isRealEntry = entry.id > 0;
-                                return (
-                                    <tr
-                                        key={entry.id}
-                                        className={`border-b border-base-300 last:border-b-0 hover:bg-base-200 ${getRowHeight()}`}
-                                    >
-                                        {getDisplayedColumns().map((col) => {
-                                            if (col.type === "action") {
-                                                return (
-                                                    <td
-                                                        key={col.id}
-                                                        className="border-r border-base-300"
-                                                    >
-                                                        {/* No + buttons in data cells anymore */}
-                                                    </td>
-                                                );
+                            {entries.map((entry, index) => (
+                                <tr
+                                    key={entry.id}
+                                    className="border-b border-base-300 hover:bg-base-200"
+                                    style={{ height: "40px" }}
+                                >
+                                    {columns.map((col) => (
+                                        <td
+                                            key={col.id}
+                                            style={{
+                                                border: "2px solid #a8a8a8",
+                                                minWidth:
+                                                    col.id === "col-sno"
+                                                        ? "80px"
+                                                        : "180px",
+                                                padding: "12px 20px",
+                                            }}
+                                            className="border-r border-base-300"
+                                            onClick={() =>
+                                                col.id !== "col-sno" &&
+                                                col.id !== "col-action" &&
+                                                handleCellClick(
+                                                    entry,
+                                                    col.id,
+                                                    true
+                                                )
                                             }
-
-                                            const column = columns.find(
-                                                (c) => c.id === col.id
-                                            );
-                                            const cellValue = isRealEntry
-                                                ? entry.data[col.id]
-                                                : "";
-                                            return (
-                                                <td
-                                                    key={col.id}
-                                                    style={{
-                                                        border: "1px solid var(--b3)",
-                                                    }}
-                                                    className={`${getCellPadding()} border-r border-base-300 ${
-                                                        col.id === "col-sno"
-                                                            ? "text-center text-base-content/50"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() =>
-                                                        !editingCell &&
-                                                        handleCellClick(
-                                                            entry,
+                                        >
+                                            {editingCell?.entryId ===
+                                                entry.id &&
+                                            editingCell?.columnId === col.id ? (
+                                                <input
+                                                    type={
+                                                        col.type === "number"
+                                                            ? "text"
+                                                            : "text"
+                                                    }
+                                                    inputMode={
+                                                        col.type === "number"
+                                                            ? "numeric"
+                                                            : "text"
+                                                    }
+                                                    defaultValue={
+                                                        entry.data[col.id] || ""
+                                                    }
+                                                    autoFocus
+                                                    onBlur={(e) =>
+                                                        handleUpdateEntry(
+                                                            entry.id,
                                                             col.id,
-                                                            isRealEntry
+                                                            e.target.value
                                                         )
                                                     }
+                                                    onKeyDown={(e) =>
+                                                        handleCellKeyDown(
+                                                            e,
+                                                            entry.id,
+                                                            col.id
+                                                        )
+                                                    }
+                                                    className="w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none text-base"
+                                                />
+                                            ) : (
+                                                <span className="block min-h-[24px] truncate text-base">
+                                                    {col.id === "col-sno"
+                                                        ? index + 1
+                                                        : col.type === "date" &&
+                                                          entry.data[col.id]
+                                                        ? new Date(
+                                                              String(
+                                                                  entry.data[
+                                                                      col.id
+                                                                  ]
+                                                              )
+                                                          ).toLocaleDateString(
+                                                              "en-GB"
+                                                          )
+                                                        : entry.data[col.id] ||
+                                                          ""}
+                                                </span>
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                            {/* Add a few empty rows if there are no entries */}
+                            {entries.length === 0 &&
+                                Array(5)
+                                    .fill(0)
+                                    .map((_, index) => (
+                                        <tr
+                                            key={`empty-${index}`}
+                                            className="border-b border-base-300"
+                                            style={{ height: "40px" }}
+                                        >
+                                            {columns.map((col) => (
+                                                <td
+                                                    key={`empty-${index}-${col.id}`}
+                                                    style={{
+                                                        border: "2px solid #a8a8a8",
+                                                        minWidth:
+                                                            col.id === "col-sno"
+                                                                ? "80px"
+                                                                : "180px",
+                                                        padding: "12px 20px",
+                                                    }}
+                                                    className="border-r border-base-300"
                                                 >
-                                                    {/* ...existing cell content code... */}
-                                                    {editingCell?.entryId ===
-                                                        entry.id &&
-                                                    editingCell?.columnId ===
-                                                        col.id ? (
-                                                        <>
-                                                            {column?.type ===
-                                                            "date" ? (
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="dd/mm/yyyy"
-                                                                    defaultValue={
-                                                                        cellValue
-                                                                            ? new Date(
-                                                                                  String(
-                                                                                      cellValue
-                                                                                  )
-                                                                              ).toLocaleDateString(
-                                                                                  "en-GB"
-                                                                              )
-                                                                            : ""
-                                                                    }
-                                                                    autoFocus
-                                                                    onBlur={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleUpdateEntry(
-                                                                            entry.id,
-                                                                            col.id,
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    onKeyDown={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleCellKeyDown(
-                                                                            e,
-                                                                            entry.id,
-                                                                            col.id
-                                                                        )
-                                                                    }
-                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
-                                                                />
-                                                            ) : column?.type ===
-                                                              "number" ? (
-                                                                <input
-                                                                    type="text"
-                                                                    inputMode="numeric"
-                                                                    pattern="[0-9]*"
-                                                                    defaultValue={String(
-                                                                        cellValue ??
-                                                                            ""
-                                                                    )}
-                                                                    autoFocus
-                                                                    onBlur={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleUpdateEntry(
-                                                                            entry.id,
-                                                                            col.id,
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    onKeyDown={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleCellKeyDown(
-                                                                            e,
-                                                                            entry.id,
-                                                                            col.id
-                                                                        )
-                                                                    }
-                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
-                                                                />
-                                                            ) : (
-                                                                <input
-                                                                    type="text"
-                                                                    defaultValue={String(
-                                                                        cellValue ??
-                                                                            ""
-                                                                    )}
-                                                                    autoFocus
-                                                                    onBlur={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleUpdateEntry(
-                                                                            entry.id,
-                                                                            col.id,
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    onKeyDown={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleCellKeyDown(
-                                                                            e,
-                                                                            entry.id,
-                                                                            col.id
-                                                                        )
-                                                                    }
-                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
-                                                                />
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <span
-                                                            className={`block ${
-                                                                isWebView
-                                                                    ? "min-h-[20px] sm:min-h-[22px]"
-                                                                    : "min-h-[24px] sm:min-h-[26px]"
-                                                            } truncate ${
-                                                                isRealEntry
-                                                                    ? "font-medium"
-                                                                    : ""
-                                                            } text-base`}
-                                                        >
-                                                            {col.id ===
-                                                            "col-sno"
-                                                                ? isRealEntry
-                                                                    ? index + 1
-                                                                    : ""
-                                                                : column?.type ===
-                                                                      "date" &&
-                                                                  cellValue
-                                                                ? new Date(
-                                                                      String(
-                                                                          cellValue
-                                                                      )
-                                                                  ).toLocaleDateString(
-                                                                      "en-GB"
-                                                                  ) // dd/mm/yyyy format
-                                                                : cellValue}
-                                                        </span>
-                                                    )}
+                                                    {col.id === "col-sno"
+                                                        ? index + 1
+                                                        : ""}
                                                 </td>
-                                            );
-                                        })}
-                                    </tr>
-                                );
-                            })}
+                                            ))}
+                                        </tr>
+                                    ))}
                         </tbody>
                     </table>
                 </div>

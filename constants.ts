@@ -9,30 +9,33 @@ export const INITIAL_PAGES: Page[] = [
                 id: "col-sno",
                 name: "S.No",
                 type: "text",
-                width: 1,
+                width: 80,
                 className: "",
             },
             {
                 id: "col-a",
                 name: "Item",
                 type: "text",
-                width: 20,
+                width: 220,
                 className: "w-32",
             },
             {
                 id: "col-c",
                 name: "Total Amount",
                 type: "number",
-                width: 20,
+                width: 220,
                 className: "w-24",
             },
-            // No changes needed here. Render the "+" button in your table header UI after the last column.
+            // No action column here - we'll add it dynamically in the UI
         ],
         entries: Array(10)
             .fill(0)
             .map((_, index) => ({
                 id: index + 1,
-                data: { "col-a": "", "col-c": null },
+                data: {
+                    "col-a": "Item " + (index + 1),
+                    "col-c": (index + 1) * 100,
+                },
             })),
     },
 ];

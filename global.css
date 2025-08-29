@@ -1,3 +1,9 @@
-@import "tailwindcss";
+/* Import Tailwind and daisyUI */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@plugin "daisyui"
+
+@plugin "daisyui" {
+  themes: light --default, cupcake;
+}

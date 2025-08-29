@@ -12,7 +12,9 @@ interface HeaderProps {
     onAddPage: () => void;
     onDeletePage: (id: string) => void;
     toggleSidebar: () => void;
-    setPages: React.Dispatch<React.SetStateAction<Page[]>>; // <-- Add this prop
+    setPages?:
+        | React.Dispatch<React.SetStateAction<Page[]>>
+        | ((pages: Page[]) => void); // Make optional
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -23,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
     onAddPage,
     onDeletePage,
     toggleSidebar,
-    setPages, // <-- Accept setPages from parent
+    setPages,
 }) => {
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
     const [contextMenu, setContextMenu] = useState<{
@@ -66,11 +68,17 @@ const Header: React.FC<HeaderProps> = ({
         console.log("Pages before rename:", pages);
 
         const trimmed = renameValue.trim();
-        if (trimmed && trimmed !== pages.find((p) => p.id === pageId)?.name) {
+        if (
+            trimmed &&
+            trimmed !== pages.find((p) => p.id === pageId)?.name &&
+            setPages
+        ) {
             setPages((prevPages) =>
-                prevPages.map((p) =>
-                    p.id === pageId ? { ...p, name: trimmed } : p
-                )
+                Array.isArray(prevPages)
+                    ? prevPages.map((p) =>
+                          p.id === pageId ? { ...p, name: trimmed } : p
+                      )
+                    : prevPages
             );
         }
         setRenameTarget(null);
@@ -141,7 +149,7 @@ const Header: React.FC<HeaderProps> = ({
                                             setRenameValue("");
                                         }
                                     }}
-                                    className="rounded-t-xl border border-blue-400 px-3 py-2 text-blue-900 font-bold bg-white flex-1"
+                                    className="rounded-t-xl border border-primary px-3 py-2 text-primary font-bold bg-base-100 flex-1"
                                     style={{
                                         minWidth: 130,
                                         maxWidth: 220,
@@ -151,7 +159,7 @@ const Header: React.FC<HeaderProps> = ({
                                 />
                                 <button
                                     type="button"
-                                    className="ml-2 p-1 rounded-full bg-blue-100 hover:bg-blue-200 border border-blue-300"
+                                    className="ml-2 p-1 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary"
                                     style={{
                                         height: 32,
                                         width: 32,
@@ -165,13 +173,12 @@ const Header: React.FC<HeaderProps> = ({
                                     }}
                                     tabIndex={-1}
                                     aria-label="Save"
-                                    // Add a handler for the right button click to save the rename value
                                     onContextMenu={(e) => {
                                         e.preventDefault();
                                         handleRename(page.id);
                                     }}
                                 >
-                                    <CheckIcon className="w-5 h-5 text-blue-700" />
+                                    <CheckIcon className="w-5 h-5 text-primary" />
                                 </button>
                             </div>
                         ) : (
@@ -180,8 +187,8 @@ const Header: React.FC<HeaderProps> = ({
                                 className={`relative flex items-center justify-center rounded-t-xl border border-b-0 transition-all duration-150
                                     ${
                                         page.id === activePageId
-                                            ? "bg-white text-blue-900 font-extrabold border-blue-700 border-l-4 shadow-lg z-10"
-                                            : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-blue-50"
+                                            ? "bg-base-100 text-primary font-extrabold border-primary border-l-4 shadow-lg z-10"
+                                            : "bg-base-200 text-base-content border-base-300 hover:bg-primary/10"
                                     }
                                 `}
                                 style={{
@@ -206,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({
                         {contextMenu && contextMenu.pageId === page.id && (
                             <div
                                 ref={contextMenuRef}
-                                className="fixed z-50 bg-white border border-gray-200 rounded shadow-lg min-w-[140px] py-1"
+                                className="fixed z-50 bg-base-100 border border-base-300 rounded shadow-lg min-w-[140px] py-1"
                                 style={{
                                     top: contextMenu.y,
                                     left: contextMenu.x,
@@ -214,7 +221,7 @@ const Header: React.FC<HeaderProps> = ({
                                 }}
                             >
                                 <button
-                                    className="w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50"
+                                    className="w-full text-left px-4 py-2 text-base-content hover:bg-primary/10"
                                     onClick={() => {
                                         setRenameTarget(page.id);
                                         setRenameValue(page.name);
@@ -223,9 +230,9 @@ const Header: React.FC<HeaderProps> = ({
                                 >
                                     Rename
                                 </button>
-                                <div className="border-t my-1" />
+                                <div className="border-t my-1 border-base-300" />
                                 <button
-                                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                                    className="w-full text-left px-4 py-2 text-error hover:bg-error/10"
                                     onClick={() => {
                                         setContextMenu(null);
                                         onDeletePage(page.id);
@@ -239,7 +246,7 @@ const Header: React.FC<HeaderProps> = ({
                 ))}
                 <button
                     onClick={onAddPage}
-                    className="ml-3 flex items-center justify-center rounded-t-xl bg-gray-100 border border-b-0 border-gray-200 hover:bg-blue-50 transition-all duration-150"
+                    className="ml-3 flex items-center justify-center rounded-t-xl bg-base-200 border border-b-0 border-base-300 hover:bg-primary/10 transition-all duration-150"
                     aria-label="Add Sheet"
                     style={{
                         minWidth: 60,
@@ -249,7 +256,7 @@ const Header: React.FC<HeaderProps> = ({
                         marginBottom: 0,
                     }}
                 >
-                    <PlusIcon className="w-8 h-8 text-blue-700" />
+                    <PlusIcon className="w-8 h-8 text-primary" />
                 </button>
             </div>
         </header>
