@@ -15,7 +15,29 @@ function App() {
         return savedActivePageId || INITIAL_PAGES[0].id;
     });
 
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    // Add a state to track if the view is mobile
+    const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    // Sidebar open state: always true on desktop, toggleable on mobile
+    const [sidebarOpen, setSidebarOpen] = useState(
+        () => window.innerWidth >= 768
+    );
+
+    useEffect(() => {
+        // Remove auto-collapse on mobile, only auto-open on desktop
+        if (!isMobile) {
+            setSidebarOpen(true); // Always open on desktop
+        }
+        // Do not auto-close on mobile
+    }, [isMobile]);
 
     useEffect(() => {
         localStorage.setItem("pages", JSON.stringify(pages));
@@ -58,7 +80,7 @@ function App() {
         };
         setPages((prev) => [...prev, newPage]);
         setActivePageId(newPage.id); // Switch to new page
-        setSidebarOpen(false); // Close sidebar after selecting new page on mobile
+        if (isMobile) setSidebarOpen(false); // Only close sidebar on mobile after selecting new page
     };
 
     const deletePage = (pageId: string) => {
@@ -72,7 +94,28 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 font-sans relative">
+        <div className="flex h-screen font-sans relative bg-base-100">
+            {/* Hamburger button for mobile, only when sidebar is closed */}
+            {isMobile && !sidebarOpen && (
+                <button
+                    className="fixed top-4 left-4 z-50 bg-white rounded-full shadow p-2 border border-gray-200"
+                    onClick={() => setSidebarOpen(true)}
+                    aria-label="Open sidebar"
+                >
+                    {/* Simple hamburger icon */}
+                    <svg
+                        width="24"
+                        height="24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    >
+                        <line x1="5" y1="7" x2="19" y2="7" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <line x1="5" y1="17" x2="19" y2="17" />
+                    </svg>
+                </button>
+            )}
             <Sidebar
                 pages={pages}
                 activePageId={activePageId}
@@ -80,18 +123,24 @@ function App() {
                 addPage={addPage}
                 deletePage={deletePage}
                 isOpen={sidebarOpen}
-                setIsOpen={setSidebarOpen}
+                setIsOpen={isMobile ? setSidebarOpen : undefined} // Only allow toggling on mobile
             />
-            <MainContent
-                key={activePage.id}
-                activePage={activePage}
-                updatePage={updatePage}
-                toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-                pages={pages}
-                activePageId={activePageId}
-                setActivePageId={setActivePageId}
-                addPage={addPage}
-            />
+            <div className="flex-1 flex flex-col w-0 md:ml-72">
+                <MainContent
+                    key={activePage.id}
+                    activePage={activePage}
+                    updatePage={updatePage}
+                    toggleSidebar={
+                        isMobile
+                            ? () => setSidebarOpen(!sidebarOpen)
+                            : undefined
+                    }
+                    pages={pages}
+                    activePageId={activePageId}
+                    setActivePageId={setActivePageId}
+                    addPage={addPage}
+                />
+            </div>
         </div>
     );
 }

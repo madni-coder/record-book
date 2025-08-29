@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => {
             "process.env.API_KEY": JSON.stringify(env.GEMINI_API_KEY),
             "process.env.GEMINI_API_KEY": JSON.stringify(env.GEMINI_API_KEY),
         },
+        css: {
+            // This section is intentionally left empty to let PostCSS config handle it
+        },
         resolve: {
             alias: {
                 "@": path.resolve(__dirname, "."),
@@ -15,6 +18,9 @@ export default defineConfig(({ mode }) => {
         },
         server: {
             port: 3002,
+        },
+        optimizeDeps: {
+            include: ["daisyui"],
         },
     };
 });

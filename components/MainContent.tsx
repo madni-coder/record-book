@@ -6,7 +6,25 @@ import LedgerFooter from "./LedgerFooter";
 import { SearchIcon, XIcon } from "./icons";
 import { INITIAL_PAGES } from "../constants";
 
-const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
+interface MainContentProps {
+    activePage: Page;
+    updatePage: (id: string, data: Partial<Page>) => void;
+    toggleSidebar: () => void;
+    pages: Page[];
+    activePageId: string;
+    setActivePageId: (id: string) => void;
+    addPage: (name: string) => void;
+}
+
+const MainContent: React.FC<MainContentProps> = ({
+    activePage,
+    updatePage,
+    toggleSidebar,
+    pages,
+    activePageId,
+    setActivePageId,
+    addPage,
+}) => {
     const [sheetsByPage, setSheetsByPage] = useState<Record<string, Page[]>>(
         () => {
             const savedSheetsByPage = localStorage.getItem("sheetsByPage");
@@ -111,11 +129,7 @@ const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
     }, [activeSheet.entries, activeSheet.columns, searchTerm]);
 
     return (
-        <div
-            className={`flex-1 flex flex-col bg-gray-50 overflow-hidden w-full ${
-                isWebView ? "web-view" : ""
-            }`}
-        >
+        <div className={`flex-1 flex flex-col overflow-hidden w-full`}>
             <Header
                 activePage={activeSheet}
                 pages={sheets.map((s, i) => ({
@@ -127,51 +141,37 @@ const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
                 onAddPage={handleAddSheet}
                 onDeletePage={handleDeleteSheet}
                 toggleSidebar={toggleSidebar}
+                setPages={updateSheetsForPage}
             />
             <div
-                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4`}
-                style={{ background: "#ffffe6" }}
+                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4 px-4`}
             >
                 <div
                     className="relative w-full sm:w-auto"
                     style={{ minWidth: "320px", maxWidth: "480px" }}
                 >
-                    <SearchIcon
-                        className={`absolute left-4 top-1/2 -translate-y-1/2 ${
-                            isWebView ? "w-5 h-5" : "w-6 h-6"
-                        } text-gray-400 pointer-events-none`}
-                    />
+                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50 pointer-events-none" />
                     <input
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className={`w-full pl-12 pr-12 ${
-                            isWebView ? "py-2 text-base" : "py-3 text-lg"
-                        } bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        className="w-full pl-12 pr-12 py-2 bg-base-100 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-base"
                         style={{ fontSize: "18px", height: "48px" }}
                     />
                     {searchTerm && (
                         <button
                             type="button"
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
                             onClick={() => setSearchTerm("")}
                             aria-label="Clear search"
                         >
-                            <XIcon
-                                className={isWebView ? "w-5 h-5" : "w-6 h-6"}
-                            />
+                            <XIcon className="w-5 h-5" />
                         </button>
                     )}
                 </div>
             </div>
-            <div
-                className={`flex-1 overflow-auto ${
-                    isWebView
-                        ? "-mx-2 px-2 sm:-mx-4 sm:px-4"
-                        : "-mx-4 px-4 sm:-mx-6 sm:px-6"
-                }`}
-            >
+            <div className="flex-1 overflow-auto px-4">
                 <LedgerTable
                     columns={activeSheet.columns}
                     entries={filteredEntries}
@@ -183,7 +183,6 @@ const MainContent: React.FC = ({ toggleSidebar, activePageId }) => {
             <LedgerFooter
                 columns={activeSheet.columns}
                 entries={filteredEntries}
-                style={{ background: "#ffffe6" }}
             />
         </div>
     );
