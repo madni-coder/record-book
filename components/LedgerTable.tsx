@@ -570,23 +570,14 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
     };
 
     return (
-        <div className="w-full border border-gray-700 rounded-lg overflow-hidden">
+        <div className="w-full border border-base-300 rounded-lg overflow-hidden">
             <div
                 ref={tableContainerRef}
-                className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 pb-1.5"
-                style={{ background: "#ffffe6" }} // <-- set table container bg
+                className="w-full overflow-x-auto scrollbar-thin pb-1.5 bg-base-100"
             >
                 <div className="min-w-full">
-                    <table
-                        className="w-full text-left text-gray-700 border-collapse table-fixed"
-                        style={{ background: "#ffffe6" }} // <-- set table bg
-                    >
-                        <thead
-                            className={`bg-gray-100 text-gray-800 font-medium ${getFontSize(
-                                true
-                            )}`}
-                            style={{ background: "#ffffe6" }} // <-- set header bg
-                        >
+                    <table className="w-full text-left text-base-content border-collapse table-fixed bg-base-100">
+                        <thead className="bg-base-200 text-base-content font-medium">
                             <tr>
                                 {getDisplayedColumns().map((col, idx) => (
                                     <th
@@ -599,12 +590,9 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                     : col.width
                                                     ? `${col.width}px`
                                                     : "auto",
-                                            border: "1px solid #374151",
-                                            background: "#ffffe6", // <-- header cell bg
+                                            border: "1px solid var(--b3)",
                                         }}
-                                        className={`${getCellPadding(
-                                            true
-                                        )} border-r border-gray-700 relative`}
+                                        className={`px-4 py-3 border-r border-base-300 relative`}
                                     >
                                         {/* Remove the plus button from the action column header and "Total Amount" column */}
                                         {col.type === "action" &&
@@ -625,7 +613,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                         onKeyDown={
                                                             handleHeaderKeyDown
                                                         }
-                                                        className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 outline-none -my-1 -mx-2 ${getFontSize()}`}
+                                                        className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
                                                     />
                                                 ) : (
                                                     <div className="flex items-center gap-1 sm:gap-2 group">
@@ -665,14 +653,14 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                             col.id
                                                                         )
                                                                     }
-                                                                    className="p-0.5 sm:p-1 rounded-full group-hover:bg-gray-200"
+                                                                    className="p-0.5 sm:p-1 rounded-full group-hover:bg-base-200"
                                                                     tabIndex={0}
                                                                 >
-                                                                    <ChevronDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 group-hover:text-gray-600" />
+                                                                    <ChevronDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-base-content/50 group-hover:text-base-content" />
                                                                 </button>
                                                                 {editingColumnType ===
                                                                     col.id && (
-                                                                    <div className="absolute left-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded shadow-lg min-w-[120px]">
+                                                                    <div className="absolute left-0 top-full mt-1 z-20 bg-base-100 border border-base-300 rounded shadow-lg min-w-[120px]">
                                                                         {columnTypes.map(
                                                                             (
                                                                                 type,
@@ -683,10 +671,10 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                                         type.id
                                                                                     }
                                                                                     type="button"
-                                                                                    className={`flex items-center w-full px-3 py-2 text-left hover:bg-blue-50 ${
+                                                                                    className={`flex items-center w-full px-3 py-2 text-left hover:bg-primary/10 ${
                                                                                         highlightedTypeIndex ===
                                                                                         i
-                                                                                            ? "bg-blue-100"
+                                                                                            ? "bg-primary/20"
                                                                                             : ""
                                                                                     }`}
                                                                                     onClick={() =>
@@ -711,7 +699,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                                     </span>
                                                                                     {col.type ===
                                                                                         type.id && (
-                                                                                        <CheckIcon className="ml-auto w-4 h-4 text-blue-600" />
+                                                                                        <CheckIcon className="ml-auto w-4 h-4 text-primary" />
                                                                                     )}
                                                                                 </button>
                                                                             )
@@ -719,7 +707,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                         {/* Add Delete Column option */}
                                                                         <button
                                                                             type="button"
-                                                                            className="flex items-center w-full px-3 py-2 text-left text-red-600 hover:bg-red-50 border-t border-gray-100"
+                                                                            className="flex items-center w-full px-3 py-2 text-left text-error hover:bg-error/10 border-t border-base-200"
                                                                             onClick={() =>
                                                                                 handleDeleteColumn(
                                                                                     col.id
@@ -754,16 +742,13 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                     </th>
                                 ))}
                                 {/* "+" button always after "Total Amount" and any added columns */}
-                                <th
-                                    className="p-0 bg-transparent border-none align-top"
-                                    style={{ background: "#ffffe6" }} // <-- plus column header bg
-                                >
+                                <th className="p-0 bg-transparent border-none align-top">
                                     <button
                                         type="button"
                                         onClick={
                                             handleAddColumnRightOfTotalAmount
                                         }
-                                        className="w-14 h-10 bg-blue-900 text-white text-2xl font-bold rounded-none flex items-center justify-center"
+                                        className="w-14 h-10 btn btn-primary text-2xl font-bold rounded-none flex items-center justify-center"
                                         aria-label="Add column"
                                     >
                                         +
@@ -777,15 +762,14 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                 return (
                                     <tr
                                         key={entry.id}
-                                        className={`border-b border-gray-700 last:border-b-0 hover:bg-gray-50 ${getRowHeight()}`}
-                                        style={{ background: "#ffffe6" }} // <-- row bg
+                                        className={`border-b border-base-300 last:border-b-0 hover:bg-base-200 ${getRowHeight()}`}
                                     >
                                         {getDisplayedColumns().map((col) => {
                                             if (col.type === "action") {
                                                 return (
                                                     <td
                                                         key={col.id}
-                                                        className="border-r border-gray-200"
+                                                        className="border-r border-base-300"
                                                     >
                                                         {/* No + buttons in data cells anymore */}
                                                     </td>
@@ -802,12 +786,11 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                 <td
                                                     key={col.id}
                                                     style={{
-                                                        border: "1px solid #374151",
-                                                        background: "#ffffe6", // <-- cell bg
+                                                        border: "1px solid var(--b3)",
                                                     }}
-                                                    className={`${getCellPadding()} border-r border-gray-700 ${
+                                                    className={`${getCellPadding()} border-r border-base-300 ${
                                                         col.id === "col-sno"
-                                                            ? "text-center text-gray-500"
+                                                            ? "text-center text-base-content/50"
                                                             : ""
                                                     }`}
                                                     onClick={() =>
@@ -862,7 +845,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                             col.id
                                                                         )
                                                                     }
-                                                                    className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 outline-none -my-1 -mx-2 ${getFontSize()}`}
+                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
                                                                 />
                                                             ) : column?.type ===
                                                               "number" ? (
@@ -895,7 +878,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                             col.id
                                                                         )
                                                                     }
-                                                                    className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 outline-none -my-1 -mx-2 ${getFontSize()}`}
+                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
                                                                 />
                                                             ) : (
                                                                 <input
@@ -925,7 +908,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                             col.id
                                                                         )
                                                                     }
-                                                                    className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 outline-none -my-1 -mx-2 ${getFontSize()}`}
+                                                                    className={`w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none -my-1 -mx-2 text-base`}
                                                                 />
                                                             )}
                                                         </>
@@ -939,7 +922,7 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                                 isRealEntry
                                                                     ? "font-medium"
                                                                     : ""
-                                                            } ${getFontSize()}`}
+                                                            } text-base`}
                                                         >
                                                             {col.id ===
                                                             "col-sno"
@@ -962,8 +945,6 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                                 </td>
                                             );
                                         })}
-                                        {/* Remove the extra <td> at the end */}
-                                        {/* <td ...></td> */}
                                     </tr>
                                 );
                             })}

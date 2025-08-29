@@ -34,7 +34,6 @@
         border-spacing: 0;
         border-color: #a8a8a8 !important;
         margin-left: 0 !important; /* left align */
-        background-color: #ffffe6 !important;
     }
 
     table tr th,
@@ -48,7 +47,6 @@
         width: 220px !important; /* increased width */
         border: 2.5px solid #a8a8a8 !important;
         text-align: left !important;
-        background-color: #ffffe6 !important;
     }
 
     /* S.No column width and visibility for web view */
@@ -60,7 +58,6 @@
         text-align: center !important;
         color: #1e293b !important;
         font-weight: bold !important;
-        background: #ffffe6 !important;
         /* Prevent text truncation for S.No */
         white-space: normal !important;
         overflow: visible !important;
@@ -68,7 +65,6 @@
     }
 
     table tr th {
-        background-color: #ffffe6 !important;
         font-weight: bold;
         color: #1e293b;
     }
@@ -118,7 +114,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border: 2.5px solid #a8a8a8 !important;
-    background-color: #ffffe6 !important;
 }
 
 /* Mobile-specific styles */
@@ -140,7 +135,6 @@
         width: 140px !important; /* wider columns */
         box-sizing: border-box;
         border: 2.5px solid #a8a8a8 !important;
-        background-color: #ffffe6 !important;
     }
 
     /* S.No column width and visibility for mobile view */
@@ -152,7 +146,6 @@
         text-align: center !important;
         color: #1e293b !important;
         font-weight: bold !important;
-        background: #ffffe6 !important;
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: initial !important;
@@ -227,7 +220,6 @@
         border-spacing: 0;
         table-layout: fixed;
         border-color: #a8a8a8 !important;
-        background-color: #ffffe6 !important;
     }
 }
 

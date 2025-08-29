@@ -102,42 +102,44 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             <div
                 ref={sidebarRef}
-                className={`${sidebarClasses} bg-gradient-to-b from-[#2A7B9B] to-[#57C785] flex flex-col flex-shrink-0`}
+                className={`${sidebarClasses} bg-base-200 flex flex-col flex-shrink-0`}
             >
-                <div className="p-4 border-b border-white/10">
+                <div className="p-4 border-b border-base-300">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-white/20 rounded-full"></div>
-                            <h1 className="font-bold text-lg text-white">
+                            <div className="w-8 h-8 bg-base-100 rounded-full"></div>
+                            <h1 className="font-bold text-lg text-base-content">
                                 My Business
                             </h1>
+                            <button className="btn btn-info">Info</button>
+
                         </div>
                         <div className="flex items-center">
                             <button
-                                className="md:hidden p-1.5 rounded-md text-white hover:bg-white/10"
+                                className="md:hidden p-1.5 rounded-md text-base-content hover:bg-base-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <XIcon className="w-5 h-5" />
                             </button>
-                            <ChevronDownIcon className="w-5 h-5 text-white hidden md:block" />
+                            <ChevronDownIcon className="w-5 h-5 text-base-content hidden md:block" />
                         </div>
                     </div>
                 </div>
 
                 <div className="p-4">
                     <div className="relative mb-4">
-                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50 pointer-events-none" />
                         <input
                             type="text"
                             placeholder="Search Page"
-                            className="w-full pl-10 pr-10 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 pr-10 py-2 bg-base-100 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                         />
-                        <BellIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <BellIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
                     </div>
                     <button
                         onClick={() => setIsAddingPage(true)}
                         disabled={isAddingPage}
-                        className="w-full bg-blue-600 text-white flex items-center justify-center gap-2 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+                        className="w-full btn btn-primary flex items-center justify-center gap-2 py-2 rounded-md disabled:btn-disabled"
                     >
                         <PlusIcon className="w-5 h-5" />
                         <span>Add New Page</span>
@@ -156,16 +158,16 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }}
                                 className={`flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                     activePageId === page.id
-                                        ? "bg-white/20 text-white"
-                                        : "text-white/90 hover:bg-white/10"
+                                        ? "bg-base-300 text-base-content"
+                                        : "text-base-content/90 hover:bg-base-200"
                                 }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <span
                                         className={`flex items-center justify-center p-1.5 rounded-md ${
                                             activePageId === page.id
-                                                ? "bg-blue-200"
-                                                : "bg-gray-200"
+                                                ? "bg-primary/20"
+                                                : "bg-base-100"
                                         }`}
                                     >
                                         <DocumentIcon className="w-5 h-5" />
@@ -187,16 +189,16 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     }}
                                     aria-label="Show page options"
                                 >
-                                    <MoreVerticalIcon className="w-5 h-5 text-gray-400" />
+                                    <MoreVerticalIcon className="w-5 h-5 text-base-content/50" />
                                 </button>
                             </a>
                             {showDeleteId === page.id && (
                                 <div
                                     ref={deleteMenuRef}
-                                    className="absolute right-2 top-10 z-10 bg-white border border-gray-200 rounded shadow-md p-2"
+                                    className="absolute right-2 top-10 z-10 bg-base-100 border border-base-300 rounded shadow-md p-2"
                                 >
                                     <button
-                                        className="text-red-600 text-xs px-2 py-1 rounded hover:bg-red-50"
+                                        className="text-error text-xs px-2 py-1 rounded hover:bg-error/10"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             e.preventDefault();
@@ -222,18 +224,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     !newPageName && setIsAddingPage(false)
                                 }
                                 placeholder="New page name..."
-                                className="w-full text-sm bg-white border border-blue-400 rounded-md px-3 py-2 outline-none ring-2 ring-blue-200 text-gray-900"
+                                className="w-full text-sm bg-base-100 border border-primary rounded-md px-3 py-2 outline-none ring-2 ring-primary/50 text-base-content"
                             />
                             <div className="flex justify-end gap-2 mt-2">
                                 <button
                                     onClick={() => setIsAddingPage(false)}
-                                    className="px-3 py-1 text-xs font-semibold text-gray-700 rounded-md hover:bg-gray-200"
+                                    className="px-3 py-1 text-xs font-semibold text-base-content rounded-md hover:bg-base-300"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleCreatePage}
-                                    className="px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                    className="px-3 py-1 text-xs font-semibold text-base-100 bg-primary rounded-md hover:bg-primary-focus"
                                 >
                                     Add
                                 </button>

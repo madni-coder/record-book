@@ -46,11 +46,7 @@ const LedgerFooter: React.FC<LedgerFooterProps> = ({
 
     return (
         <div
-            className={`flex-shrink-0 bg-gray-50 border-t border-gray-200 ${
-                isWebView
-                    ? "px-3 sm:px-4 py-1.5 sm:py-2"
-                    : "px-4 sm:px-6 py-2 sm:py-3"
-            } overflow-x-auto whitespace-nowrap`}
+            className={`flex-shrink-0 border-t border-base-300 px-4 py-2 bg-base-100 overflow-x-auto whitespace-nowrap`}
             style={style} // <-- apply style prop
         >
             <div className="flex flex-wrap items-center gap-4 sm:gap-8">
@@ -60,18 +56,12 @@ const LedgerFooter: React.FC<LedgerFooterProps> = ({
                         className="flex items-center gap-1 sm:gap-2"
                     >
                         <span
-                            className={`font-semibold text-gray-600 ${
-                                isWebView
-                                    ? "text-xs sm:text-sm"
-                                    : "text-sm sm:text-base"
-                            }`}
+                            className={`font-semibold text-base-content text-sm`}
                         >
                             {sum.name}:
                         </span>
                         <span
-                            className={`font-bold ${
-                                isWebView ? "text-sm" : "text-base sm:text-lg"
-                            } text-gray-900`}
+                            className={`font-bold text-base-content text-base`}
                         >
                             {sum.total.toLocaleString(undefined, {
                                 minimumFractionDigits: 0,

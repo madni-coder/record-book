@@ -78,11 +78,11 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <header className="h-16 bg-gradient-to-r from-[#2A7B9B] via-[#57C785] to-[#EDDD53] text-white flex flex-col justify-end px-0 shadow-md z-10 flex-shrink-0">
+        <header className="h-16 bg-base-200 text-base-content flex flex-col justify-end px-0 shadow-md z-10 flex-shrink-0">
             <div className="flex items-center px-4 sm:px-6 h-full">
                 <button
                     onClick={toggleSidebar}
-                    className="md:hidden p-1.5 rounded-md text-white hover:bg-slate-700 transition-colors"
+                    className="md:hidden p-1.5 rounded-md text-base-content hover:bg-base-300 transition-colors"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({
             </div>
             {/* Tab bar */}
             <div
-                className="flex items-end bg-cream px-4 py-2 border-t border-gray-200 overflow-x-auto shadow"
+                className="flex items-end bg-base-100 px-4 py-2 border-t border-base-300 overflow-x-auto shadow"
                 style={{ minHeight: 60 }}
             >
                 {pages.map((page, idx) => (

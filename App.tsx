@@ -72,7 +72,7 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 font-sans relative">
+        <div className="flex h-screen font-sans relative bg-base-100">
             <Sidebar
                 pages={pages}
                 activePageId={activePageId}
