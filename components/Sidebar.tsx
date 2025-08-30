@@ -35,6 +35,32 @@ const Sidebar: React.FC<SidebarProps> = ({
     const deleteMenuRef = useRef<HTMLDivElement | null>(null);
     const sidebarRef = useRef<HTMLDivElement | null>(null);
 
+    // Theme toggle state and effect
+    const [theme, setTheme] = useState<"cupcake" | "night">(() => {
+        if (typeof window !== "undefined") {
+            return (
+                (document.documentElement.getAttribute("data-theme") as
+                    | "cupcake"
+                    | "night") || "cupcake"
+            );
+        }
+        return "cupcake";
+    });
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    useEffect(() => {
+        // On mount, restore theme from localStorage if present
+        const saved = localStorage.getItem("theme");
+        if (saved === "night" || saved === "cupcake") {
+            setTheme(saved);
+            document.documentElement.setAttribute("data-theme", saved);
+        }
+    }, []);
+
     // Hide delete option when clicking outside
     useEffect(() => {
         if (!showDeleteId) return;
@@ -107,11 +133,66 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <div className="p-4 border-b border-base-300">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
+                            {/* Theme toggle button */}
+                            <button
+                                aria-label="Toggle dark/light mode"
+                                className="mr-2 p-1.5 rounded-full border border-base-300 bg-base-100 hover:bg-base-300 transition-colors"
+                                onClick={() =>
+                                    setTheme((prev) =>
+                                        prev === "cupcake"
+                                            ? "night"
+                                            : "cupcake"
+                                    )
+                                }
+                                title={
+                                    theme === "cupcake"
+                                        ? "Switch to Dark (Sunset)"
+                                        : "Switch to Light (Cupcake)"
+                                }
+                            >
+                                {theme === "cupcake" ? (
+                                    // Sun icon for light mode
+                                    <svg
+                                        className="w-5 h-5 text-yellow-500"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="5"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07-1.41-1.41M6.34 6.34 4.93 4.93m12.02 0-1.41 1.41M6.34 17.66l-1.41 1.41"
+                                        />
+                                    </svg>
+                                ) : (
+                                    // Moon icon for dark mode
+                                    <svg
+                                        className="w-5 h-5 text-orange-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79z"
+                                        />
+                                    </svg>
+                                )}
+                            </button>
                             <div className="w-8 h-8 bg-base-100 rounded-full"></div>
                             <h1 className="font-bold text-lg text-base-content">
                                 My Business
                             </h1>
-
                         </div>
                         <div className="flex items-center">
                             <button
