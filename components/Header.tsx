@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { PlusIcon } from "./icons";
-// Add this import for a check icon (or use your own icon)
 import { CheckIcon } from "./icons";
 import type { Page } from "../types";
 
@@ -11,7 +10,6 @@ interface HeaderProps {
     setActivePageId: (id: string) => void;
     onAddPage: () => void;
     onDeletePage: (id: string) => void;
-    toggleSidebar: () => void;
     setPages?:
         | React.Dispatch<React.SetStateAction<Page[]>>
         | ((pages: Page[]) => void); // Make optional
@@ -24,7 +22,6 @@ const Header: React.FC<HeaderProps> = ({
     setActivePageId,
     onAddPage,
     onDeletePage,
-    toggleSidebar,
     setPages,
 }) => {
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -86,29 +83,14 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
+        
         <header className="h-16 bg-base-200 text-base-content flex flex-col justify-end px-0 shadow-md z-10 flex-shrink-0">
+           
             <div className="flex items-center px-4 sm:px-6 h-full">
-                <button
-                    onClick={toggleSidebar}
-                    className="md:hidden p-1.5 rounded-md text-base-content hover:bg-base-300 transition-colors"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                        />
-                    </svg>
-                </button>
+                
                 <div className="flex-1"></div>
             </div>
+            
             {/* Tab bar */}
             <div
                 className="flex items-end bg-base-100 px-4 py-2 border-t border-base-300 overflow-x-auto shadow"

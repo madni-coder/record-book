@@ -1,8 +1,50 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import MainContent from "./components/MainContent";
-import Sidebar from "./components/Sidebar";
 import { INITIAL_PAGES } from "./constants";
 import type { Page } from "./types";
+import HomePage from "./components/HomePage";
+
+// LedgerApp no longer needs sidebar logic
+function LedgerApp({
+    pages,
+    setPages,
+    activePageId,
+    setActivePageId,
+    addPage,
+    deletePage,
+}) {
+    const { pageId } = useParams();
+    useEffect(() => {
+        if (pageId && pageId !== activePageId) setActivePageId(pageId);
+    }, [pageId]);
+    const activePage =
+        pages.find((p) => p.id === (pageId || activePageId)) || pages[0];
+    const updatePage = (pageId: string, updatedPageData: Partial<Page>) => {
+        setPages((prevPages) =>
+            prevPages.map((p) =>
+                p.id === pageId ? { ...p, ...updatedPageData } : p
+            )
+        );
+    };
+    return (
+        <div className="flex h-screen font-sans relative bg-base-100">
+            {/* Sidebar removed */}
+            <div className="flex-1 flex flex-col w-0">
+                <MainContent
+                    key={activePage.id}
+                    activePage={activePage}
+                    updatePage={updatePage}
+                    toggleSidebar={undefined}
+                    pages={pages}
+                    activePageId={activePage.id}
+                    setActivePageId={setActivePageId}
+                    addPage={addPage}
+                />
+            </div>
+        </div>
+    );
+}
 
 function App() {
     const [pages, setPages] = useState<Page[]>(() => {
@@ -15,30 +57,6 @@ function App() {
         return savedActivePageId || INITIAL_PAGES[0].id;
     });
 
-    // Add a state to track if the view is mobile
-    const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    // Sidebar open state: always true on desktop, toggleable on mobile
-    const [sidebarOpen, setSidebarOpen] = useState(
-        () => window.innerWidth >= 768
-    );
-
-    useEffect(() => {
-        // Remove auto-collapse on mobile, only auto-open on desktop
-        if (!isMobile) {
-            setSidebarOpen(true); // Always open on desktop
-        }
-        // Do not auto-close on mobile
-    }, [isMobile]);
-
     useEffect(() => {
         localStorage.setItem("pages", JSON.stringify(pages));
     }, [pages]);
@@ -46,16 +64,6 @@ function App() {
     useEffect(() => {
         localStorage.setItem("activePageId", activePageId);
     }, [activePageId]);
-
-    const activePage = pages.find((p) => p.id === activePageId) || pages[0];
-
-    const updatePage = (pageId: string, updatedPageData: Partial<Page>) => {
-        setPages((prevPages) =>
-            prevPages.map((p) =>
-                p.id === pageId ? { ...p, ...updatedPageData } : p
-            )
-        );
-    };
 
     const addPage = (name: string) => {
         const newPage: Page = {
@@ -79,8 +87,7 @@ function App() {
                 })),
         };
         setPages((prev) => [...prev, newPage]);
-        setActivePageId(newPage.id); // Switch to new page
-        if (isMobile) setSidebarOpen(false); // Only close sidebar on mobile after selecting new page
+        setActivePageId(newPage.id);
     };
 
     const deletePage = (pageId: string) => {
@@ -94,54 +101,32 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen font-sans relative bg-base-100">
-            {/* Hamburger button for mobile, only when sidebar is closed */}
-            {isMobile && !sidebarOpen && (
-                <button
-                    className="fixed top-4 left-4 z-50 bg-white rounded-full shadow p-2 border border-gray-200"
-                    onClick={() => setSidebarOpen(true)}
-                    aria-label="Open sidebar"
-                >
-                    {/* Simple hamburger icon */}
-                    <svg
-                        width="24"
-                        height="24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <line x1="5" y1="7" x2="19" y2="7" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                        <line x1="5" y1="17" x2="19" y2="17" />
-                    </svg>
-                </button>
-            )}
-            <Sidebar
-                pages={pages}
-                activePageId={activePageId}
-                setActivePageId={setActivePageId}
-                addPage={addPage}
-                deletePage={deletePage}
-                isOpen={sidebarOpen}
-                setIsOpen={isMobile ? setSidebarOpen : undefined} // Only allow toggling on mobile
-            />
-            <div className="flex-1 flex flex-col w-0 md:ml-72">
-                <MainContent
-                    key={activePage.id}
-                    activePage={activePage}
-                    updatePage={updatePage}
-                    toggleSidebar={
-                        isMobile
-                            ? () => setSidebarOpen(!sidebarOpen)
-                            : undefined
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <HomePage
+                            pages={pages}
+                            onRowClick={(id) => setActivePageId(id)}
+                        />
                     }
-                    pages={pages}
-                    activePageId={activePageId}
-                    setActivePageId={setActivePageId}
-                    addPage={addPage}
                 />
-            </div>
-        </div>
+                <Route
+                    path="/page/:pageId"
+                    element={
+                        <LedgerApp
+                            pages={pages}
+                            setPages={setPages}
+                            activePageId={activePageId}
+                            setActivePageId={setActivePageId}
+                            addPage={addPage}
+                            deletePage={deletePage}
+                        />
+                    }
+                />
+            </Routes>
+        </BrowserRouter>
     );
 }
 
