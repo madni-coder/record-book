@@ -83,24 +83,17 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        
-        <header className="h-16 bg-base-200 text-base-content flex flex-col justify-end px-0 shadow-md z-10 flex-shrink-0">
-           
-            <div className="flex items-center px-4 sm:px-6 h-full">
-                
-                <div className="flex-1"></div>
-            </div>
-            
+        <header className="h-16text-base-content flex flex-col justify-end px-0 shadow-md z-10 flex-shrink-0">
             {/* Tab bar */}
             <div
-                className="flex items-end bg-base-100 px-4 py-2 border-t border-base-300 overflow-x-auto shadow"
+                className="flex bg-base-100 px-4 border-t border-base-300 overflow-x-auto shadow "
                 style={{ minHeight: 60 }}
             >
                 {pages.map((page, idx) => (
                     <div
                         key={page.id}
                         className="relative flex items-center group"
-                        style={{ minWidth: 130, maxWidth: 220, height: 48 }}
+                        style={{ minWidth: 130, maxWidth: 220, height: 50 }}
                         onContextMenu={(e) => {
                             e.preventDefault();
                             setContextMenu({
@@ -110,87 +103,41 @@ const Header: React.FC<HeaderProps> = ({
                             });
                         }}
                     >
-                        {renameTarget === page.id ? (
-                            <div className="flex items-center w-full">
-                                <input
-                                    ref={renameInputRef}
-                                    type="text"
-                                    value={renameValue}
-                                    autoFocus
-                                    onChange={(e) =>
-                                        setRenameValue(e.target.value)
-                                    }
-                                    onBlur={() => handleRename(page.id)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault();
-                                            handleRename(page.id);
-                                        }
-                                        if (e.key === "Escape") {
-                                            setRenameTarget(null);
-                                            setRenameValue("");
-                                        }
-                                    }}
-                                    className="rounded-t-xl border border-primary px-3 py-2 text-primary font-bold bg-base-100 flex-1"
-                                    style={{
-                                        minWidth: 130,
-                                        maxWidth: 220,
-                                        height: 48,
-                                        fontSize: "1.35rem",
-                                    }}
-                                />
-                                <button
-                                    type="button"
-                                    className="ml-2 p-1 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary"
-                                    style={{
-                                        height: 32,
-                                        width: 32,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        handleRename(page.id);
-                                    }}
-                                    tabIndex={-1}
-                                    aria-label="Save"
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        handleRename(page.id);
-                                    }}
-                                >
-                                    <CheckIcon className="w-5 h-5 text-primary" />
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                onClick={() => setActivePageId(page.id)}
-                                className={`relative flex items-center justify-center rounded-t-xl border border-b-0 transition-all duration-150
-                                    ${
-                                        page.id === activePageId
-                                            ? "bg-base-100 text-primary font-extrabold border-primary border-l-4 shadow-lg z-10"
-                                            : "bg-base-200 text-base-content border-base-300 hover:bg-primary/10"
-                                    }
-                                `}
-                                style={{
-                                    minWidth: 130,
-                                    maxWidth: 220,
-                                    height: 48,
-                                    fontSize: "1.35rem",
-                                    padding: "0 32px",
-                                    boxShadow:
-                                        page.id === activePageId
-                                            ? "0 4px 16px rgba(0,0,0,0.10)"
-                                            : undefined,
-                                    borderLeftWidth:
-                                        page.id === activePageId ? 6 : 1,
-                                    paddingRight: 32,
-                                }}
-                            >
+                        <button
+                            onClick={() => setActivePageId(page.id)}
+                            className={`relative flex items-center justify-center rounded-t-xl border border-b-0 transition-all duration-150
+                                ${
+                                    page.id === activePageId
+                                        ? "bg-base-100 text-primary font-extrabold border-primary border-l-4 shadow-lg z-10"
+                                        : "bg-base-200 text-base-content border-base-300 hover:bg-primary/10"
+                                }
+                            `}
+                            style={{
+                                minWidth: 130,
+                                maxWidth: 220,
+                                height: 48,
+                                fontSize: "1.35rem",
+                                padding: "0 32px",
+                                boxShadow:
+                                    page.id === activePageId
+                                        ? "0 4px 16px rgba(0,0,0,0.10)"
+                                        : undefined,
+                                borderLeftWidth:
+                                    page.id === activePageId ? 6 : 1,
+                                paddingRight: 32,
+                                overflow: "hidden",
+                                marginTop: 2,
+                                backgroundClip: "padding-box",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                whiteSpace: "nowrap", // Prevent line breaks
+                            }}
+                        >
+                            <span className="w-full whitespace-nowrap">
                                 {page.name}
-                            </button>
-                        )}
+                            </span>
+                        </button>
                         {/* Context menu rendered absolutely at viewport (over everything) */}
                         {contextMenu && contextMenu.pageId === page.id && (
                             <div
