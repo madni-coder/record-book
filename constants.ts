@@ -28,14 +28,6 @@ export const INITIAL_PAGES: Page[] = [
             },
             // No action column here - we'll add it dynamically in the UI
         ],
-        entries: Array(10)
-            .fill(0)
-            .map((_, index) => ({
-                id: index + 1,
-                data: {
-                    "col-a": "Item " + (index + 1),
-                    "col-c": (index + 1) * 100,
-                },
-            })),
+        entries: [], // Start with completely empty entries
     },
 ];
