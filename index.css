@@ -23,6 +23,12 @@
     }
 }
 
+/* Add margin below the tab bar to prevent overlap with search bar */
+header > .flex.overflow-x-auto,
+header > .flex.bg-base-100 {
+    margin-top: 1.25rem; /* Increased from 0.5rem to 1.25rem for more gap */
+}
+
 /* Web-specific styles */
 @media screen and (min-width: 768px) {
     table {

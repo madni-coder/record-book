@@ -158,19 +158,20 @@ const MainContent: React.FC<MainContentProps> = ({
                 </div>
                 {/* Optionally, add right-side icons here */}
             </div>
-            <Header
-                activePage={activeSheet}
-                pages={sheets.map((s, i) => ({
-                    ...s,
-                    name: `Sheet ${i + 1}`,
-                }))}
-                activePageId={activeSheetId}
-                setActivePageId={setActiveSheetId}
-                onAddPage={handleAddSheet}
-                onDeletePage={handleDeleteSheet}
-                setPages={updateSheetsForPage}
-            />
-
+            <div className="mb-3">
+                <Header
+                    activePage={activeSheet}
+                    pages={sheets.map((s, i) => ({
+                        ...s,
+                        name: `Sheet ${i + 1}`,
+                    }))}
+                    activePageId={activeSheetId}
+                    setActivePageId={setActiveSheetId}
+                    onAddPage={handleAddSheet}
+                    onDeletePage={handleDeleteSheet}
+                    setPages={updateSheetsForPage}
+                />
+            </div>
             <div
                 className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4 px-4`}
             >
@@ -190,7 +191,7 @@ const MainContent: React.FC<MainContentProps> = ({
                     {searchTerm && (
                         <button
                             type="button"
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content "
                             onClick={() => setSearchTerm("")}
                             aria-label="Clear search"
                         >
