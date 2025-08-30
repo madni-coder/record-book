@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Page, Entry, Column } from "../types";
 import Header from "./Header";
 import LedgerTable from "./LedgerTable";
@@ -9,7 +10,6 @@ import { INITIAL_PAGES } from "../constants";
 interface MainContentProps {
     activePage: Page;
     updatePage: (id: string, data: Partial<Page>) => void;
-    toggleSidebar: () => void;
     pages: Page[];
     activePageId: string;
     setActivePageId: (id: string) => void;
@@ -19,12 +19,12 @@ interface MainContentProps {
 const MainContent: React.FC<MainContentProps> = ({
     activePage,
     updatePage,
-    toggleSidebar,
     pages,
     activePageId,
     setActivePageId,
     addPage,
 }) => {
+    const navigate = useNavigate();
     const [sheetsByPage, setSheetsByPage] = useState<Record<string, Page[]>>(
         () => {
             const savedSheetsByPage = localStorage.getItem("sheetsByPage");
@@ -130,6 +130,34 @@ const MainContent: React.FC<MainContentProps> = ({
 
     return (
         <div className={`flex-1 flex flex-col overflow-hidden w-full`}>
+            <div
+                className="w-full bg-primary text-white flex items-center px-4 py-3 gap-3"
+                style={{ minHeight: 64 }}
+            >
+                <button
+                    className="btn btn-ghost btn-circle text-white"
+                    onClick={() => navigate("/")}
+                    aria-label="Back to Home"
+                    type="button"
+                >
+                    <span className="text-2xl">&#8592;</span>
+                </button>
+                {/* Icon placeholder (optional, like the book in the image) */}
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-2">
+                    {/* You can use your own icon here */}
+                    <span className="text-xl">📒</span>
+                </div>
+                <div className="flex flex-col">
+                    <span className="font-bold text-lg sm:text-xl leading-tight">
+                        Ledger Table
+                    </span>
+                    <span className="text-xs sm:text-sm opacity-80">
+                        {/* Optional subtitle, e.g., "1 Members" */}
+                        Table Details
+                    </span>
+                </div>
+                {/* Optionally, add right-side icons here */}
+            </div>
             <Header
                 activePage={activeSheet}
                 pages={sheets.map((s, i) => ({
@@ -140,9 +168,9 @@ const MainContent: React.FC<MainContentProps> = ({
                 setActivePageId={setActiveSheetId}
                 onAddPage={handleAddSheet}
                 onDeletePage={handleDeleteSheet}
-                toggleSidebar={toggleSidebar}
                 setPages={updateSheetsForPage}
             />
+
             <div
                 className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4 px-4`}
             >
