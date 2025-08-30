@@ -12,40 +12,33 @@ import {
 interface HomePageProps {
     pages: Page[];
     onRowClick?: (id: string) => void;
+    onAddPage?: (name: string) => void; // Add this prop to handle page creation
 }
 
-const HomePage: React.FC<HomePageProps> = ({ pages }) => {
+const HomePage: React.FC<HomePageProps> = ({
+    pages: initialPages,
+    onAddPage,
+}) => {
     const navigate = useNavigate();
+    const [pages, setPages] = useState<Page[]>(initialPages);
     const [search, setSearch] = useState("");
     const [isAddingPage, setIsAddingPage] = useState(false);
     const [newPageName, setNewPageName] = useState("");
-    const [activePageId, setActivePageId] = useState(pages[0]?.id || "");
-    const [theme, setTheme] = useState<"cupcake" | "night">(() => {
-        if (typeof window !== "undefined") {
-            return (
-                (document.documentElement.getAttribute("data-theme") as
-                    | "cupcake"
-                    | "night") ||
-                localStorage.getItem("theme") ||
-                "cupcake"
-            );
-        }
-        return "cupcake";
-    });
+    const [activePageId, setActivePageId] = useState(initialPages[0]?.id || "");
+    // Remove localStorage and always start with default theme
+    const [theme, setTheme] = useState<"cupcake" | "night">("cupcake");
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
+        // Remove localStorage persistence
     }, [theme]);
 
+    // Remove theme restoration from localStorage
+
+    // Keep local pages in sync if initialPages prop changes
     useEffect(() => {
-        // On mount, restore theme from localStorage if present
-        const saved = localStorage.getItem("theme");
-        if (saved === "night" || saved === "cupcake") {
-            setTheme(saved);
-            document.documentElement.setAttribute("data-theme", saved);
-        }
-    }, []);
+        setPages(initialPages);
+    }, [initialPages]);
 
     const filteredPages = pages.filter((p) =>
         p.name.toLowerCase().includes(search.toLowerCase())
@@ -53,15 +46,19 @@ const HomePage: React.FC<HomePageProps> = ({ pages }) => {
 
     const handleCreatePage = () => {
         const trimmed = newPageName.trim();
-        if (trimmed) {
-            // Simulate add (in real app, call prop)
+        if (trimmed && onAddPage) {
+            // Use the onAddPage prop to create the page in App.tsx
+            onAddPage(trimmed);
             setNewPageName("");
             setIsAddingPage(false);
-            // Redirect to the new page path (simulate id)
-            const newId = `${trimmed
+
+            // Navigate to the new page immediately
+            const newPageId = `${trimmed
                 .toLowerCase()
                 .replace(/\s+/g, "-")}-${Date.now()}`;
-            navigate(`/page/${newId}`);
+            setTimeout(() => {
+                navigate(`/page/${newPageId}`);
+            }, 100);
         }
     };
 
@@ -126,9 +123,8 @@ const HomePage: React.FC<HomePageProps> = ({ pages }) => {
                             )}
                         </button>
                         {/* Avatar */}
-                        <div className="w-8 h-8 bg-base-100 rounded-full"></div>
                         <h1 className="font-bold text-lg text-base-content ml-1">
-                            My Business
+                            Expense Count
                         </h1>
                     </div>
                 </div>
@@ -144,8 +140,8 @@ const HomePage: React.FC<HomePageProps> = ({ pages }) => {
                             style={{ fontWeight: 500 }}
                         />
                         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
-                        <BellIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
                     </div>
+
                     <button
                         onClick={() => setIsAddingPage(true)}
                         disabled={isAddingPage}
@@ -223,18 +219,36 @@ const HomePage: React.FC<HomePageProps> = ({ pages }) => {
                                     if (!newPageName) setIsAddingPage(false);
                                 }}
                                 placeholder="New page name..."
-                                className="w-full text-base bg-base-100 border border-primary rounded-xl px-3 py-2 outline-none ring-2 ring-primary/50 text-base-content"
+                                className="w-full text-base bg-base-100 border-2 rounded-xl px-3 py-2 outline-none"
+                                style={{
+                                    borderColor: "#5EEAD4", // mint-400
+                                    boxShadow: "0 0 0 2px #5EEAD4",
+                                    fontWeight: 500,
+                                    color: "#7C6F82",
+                                }}
                             />
                             <div className="flex justify-end gap-2 mt-2">
                                 <button
+                                    type="button"
                                     onClick={() => setIsAddingPage(false)}
-                                    className="px-3 py-1 text-xs font-semibold text-base-content rounded-md hover:bg-base-300"
+                                    className="px-3 py-1 text-xs font-semibold rounded-md"
+                                    style={{
+                                        color: "#3B2C4A",
+                                        background: "none",
+                                        border: "none",
+                                        boxShadow: "none",
+                                    }}
                                 >
                                     Cancel
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={handleCreatePage}
-                                    className="px-3 py-1 text-xs font-semibold text-base-100 bg-primary rounded-md hover:bg-primary-focus"
+                                    className="px-3 py-1 text-xs font-semibold rounded-md"
+                                    style={{
+                                        background: "#5EEAD4", // mint-400
+                                        color: "#fff",
+                                    }}
                                 >
                                     Add
                                 </button>

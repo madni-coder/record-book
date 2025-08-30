@@ -489,8 +489,22 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
     };
 
     const displayEntries = useMemo(() => {
-        // Show all entries, not just the first 10
-        return entries;
+        // Always show at least 10 rows - either real entries or empty placeholders
+        const minRows = 10;
+        const actualEntries = [...entries]; // Copy of actual entries
+
+        // If we have fewer than minRows entries, add placeholder entries
+        if (actualEntries.length < minRows) {
+            const placeholderCount = minRows - actualEntries.length;
+            for (let i = 0; i < placeholderCount; i++) {
+                actualEntries.push({
+                    id: -(i + 1), // Negative IDs for placeholders
+                    data: {},
+                });
+            }
+        }
+
+        return actualEntries;
     }, [entries]);
 
     const onResizeStart = (columnId: string, e: React.MouseEvent) => {
@@ -573,11 +587,9 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
     const navigate = useNavigate();
 
     return (
-        
         <div className="w-full">
-            
             {/* Header bar like the image */}
-          
+
             <div className="border border-base-300 rounded-lg overflow-hidden">
                 {/* ...existing code for table... */}
                 <div
@@ -706,131 +718,116 @@ const LedgerTable: React.FC<LedgerTableProps> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {entries.map((entry, index) => (
-                                    <tr
-                                        key={entry.id}
-                                        className="border-b border-base-300 hover:bg-base-200"
-                                        style={{ height: "40px" }}
-                                    >
-                                        {columns.map((col) => (
-                                            <td
-                                                key={col.id}
-                                                style={{
-                                                    border: "2px solid #a8a8a8",
-                                                    minWidth:
-                                                        col.id === "col-sno"
-                                                            ? "80px"
-                                                            : "180px",
-                                                    padding: "12px 20px",
-                                                }}
-                                                className="border-r border-base-300"
-                                                onClick={() =>
-                                                    col.id !== "col-sno" &&
-                                                    col.id !== "col-action" &&
-                                                    handleCellClick(
-                                                        entry,
-                                                        col.id,
-                                                        true
-                                                    )
-                                                }
-                                            >
-                                                {editingCell?.entryId ===
-                                                    entry.id &&
-                                                editingCell?.columnId ===
-                                                    col.id ? (
-                                                    <input
-                                                        type={
-                                                            col.type ===
-                                                            "number"
-                                                                ? "text"
-                                                                : "text"
-                                                        }
-                                                        inputMode={
-                                                            col.type ===
-                                                            "number"
-                                                                ? "numeric"
-                                                                : "text"
-                                                        }
-                                                        defaultValue={
-                                                            entry.data[
-                                                                col.id
-                                                            ] || ""
-                                                        }
-                                                        autoFocus
-                                                        onBlur={(e) =>
-                                                            handleUpdateEntry(
-                                                                entry.id,
-                                                                col.id,
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        onKeyDown={(e) =>
-                                                            handleCellKeyDown(
-                                                                e,
-                                                                entry.id,
-                                                                col.id
-                                                            )
-                                                        }
-                                                        className="w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none text-base"
-                                                    />
-                                                ) : (
-                                                    <span className="block min-h-[24px] truncate text-base">
-                                                        {col.id === "col-sno"
-                                                            ? index + 1
-                                                            : col.type ===
-                                                                  "date" &&
-                                                              entry.data[col.id]
-                                                            ? new Date(
-                                                                  String(
-                                                                      entry
-                                                                          .data[
-                                                                          col.id
-                                                                      ]
+                                {displayEntries.map((entry, index) => {
+                                    const isPlaceholder = entry.id < 0;
+                                    const displayIndex = isPlaceholder
+                                        ? entries.length + Math.abs(entry.id)
+                                        : index + 1;
+
+                                    return (
+                                        <tr
+                                            key={
+                                                isPlaceholder
+                                                    ? `placeholder-${entry.id}`
+                                                    : entry.id
+                                            }
+                                            className="border-b border-base-300 hover:bg-base-200"
+                                            style={{ height: "40px" }}
+                                        >
+                                            {columns.map((col) => (
+                                                <td
+                                                    key={col.id}
+                                                    style={{
+                                                        border: "2px solid #a8a8a8",
+                                                        minWidth:
+                                                            col.id === "col-sno"
+                                                                ? "80px"
+                                                                : "180px",
+                                                        padding: "12px 20px",
+                                                    }}
+                                                    className="border-r border-base-300 cursor-pointer"
+                                                    onClick={() =>
+                                                        col.id !== "col-sno" &&
+                                                        col.id !==
+                                                            "col-action" &&
+                                                        handleCellClick(
+                                                            entry,
+                                                            col.id,
+                                                            !isPlaceholder
+                                                        )
+                                                    }
+                                                >
+                                                    {editingCell?.entryId ===
+                                                        entry.id &&
+                                                    editingCell?.columnId ===
+                                                        col.id ? (
+                                                        <input
+                                                            type={
+                                                                col.type ===
+                                                                "number"
+                                                                    ? "text"
+                                                                    : "text"
+                                                            }
+                                                            inputMode={
+                                                                col.type ===
+                                                                "number"
+                                                                    ? "numeric"
+                                                                    : "text"
+                                                            }
+                                                            defaultValue={
+                                                                entry.data[
+                                                                    col.id
+                                                                ] || ""
+                                                            }
+                                                            autoFocus
+                                                            onBlur={(e) =>
+                                                                handleUpdateEntry(
+                                                                    entry.id,
+                                                                    col.id,
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            onKeyDown={(e) =>
+                                                                handleCellKeyDown(
+                                                                    e,
+                                                                    entry.id,
+                                                                    col.id
+                                                                )
+                                                            }
+                                                            className="w-full bg-base-100 border border-primary rounded px-2 py-1 outline-none text-base"
+                                                        />
+                                                    ) : (
+                                                        <span className="block min-h-[24px] truncate text-base">
+                                                            {col.id ===
+                                                            "col-sno"
+                                                                ? displayIndex
+                                                                : col.type ===
+                                                                      "date" &&
+                                                                  entry.data[
+                                                                      col.id
+                                                                  ]
+                                                                ? new Date(
+                                                                      String(
+                                                                          entry
+                                                                              .data[
+                                                                              col
+                                                                                  .id
+                                                                          ]
+                                                                      )
+                                                                  ).toLocaleDateString(
+                                                                      "en-GB"
                                                                   )
-                                                              ).toLocaleDateString(
-                                                                  "en-GB"
-                                                              )
-                                                            : entry.data[
-                                                                  col.id
-                                                              ] || ""}
-                                                    </span>
-                                                )}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                                {/* Add a few empty rows if there are no entries */}
-                                {entries.length === 0 &&
-                                    Array(5)
-                                        .fill(0)
-                                        .map((_, index) => (
-                                            <tr
-                                                key={`empty-${index}`}
-                                                className="border-b border-base-300"
-                                                style={{ height: "40px" }}
-                                            >
-                                                {columns.map((col) => (
-                                                    <td
-                                                        key={`empty-${index}-${col.id}`}
-                                                        style={{
-                                                            border: "2px solid #a8a8a8",
-                                                            minWidth:
-                                                                col.id ===
-                                                                "col-sno"
-                                                                    ? "80px"
-                                                                    : "180px",
-                                                            padding:
-                                                                "12px 20px",
-                                                        }}
-                                                        className="border-r border-base-300"
-                                                    >
-                                                        {col.id === "col-sno"
-                                                            ? index + 1
-                                                            : ""}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
+                                                                : entry.data[
+                                                                      col.id
+                                                                  ] || ""}
+                                                        </span>
+                                                    )}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

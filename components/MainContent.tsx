@@ -25,22 +25,15 @@ const MainContent: React.FC<MainContentProps> = ({
     addPage,
 }) => {
     const navigate = useNavigate();
+    // Remove localStorage and always start with initial sheets
     const [sheetsByPage, setSheetsByPage] = useState<Record<string, Page[]>>(
-        () => {
-            const savedSheetsByPage = localStorage.getItem("sheetsByPage");
-            return savedSheetsByPage ? JSON.parse(savedSheetsByPage) : {};
-        }
+        {}
     );
 
     const sheets =
         sheetsByPage[activePageId] || JSON.parse(JSON.stringify(INITIAL_PAGES));
 
-    const [activeSheetId, setActiveSheetId] = useState<string>(() => {
-        const savedActiveSheetId = localStorage.getItem(
-            `activeSheetId-${activePageId}`
-        );
-        return savedActiveSheetId || sheets[0]?.id;
-    });
+    const [activeSheetId, setActiveSheetId] = useState<string>(sheets[0]?.id);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isMobile, setIsMobile] = useState(false);
@@ -60,13 +53,7 @@ const MainContent: React.FC<MainContentProps> = ({
         return () => window.removeEventListener("resize", checkEnvironment);
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem("sheetsByPage", JSON.stringify(sheetsByPage));
-    }, [sheetsByPage]);
-
-    useEffect(() => {
-        localStorage.setItem(`activeSheetId-${activePageId}`, activeSheetId);
-    }, [activeSheetId, activePageId]);
+    // Remove localStorage persistence effects
 
     const updateSheetsForPage = (updatedSheets: Page[]) => {
         setSheetsByPage((prev) => ({

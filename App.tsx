@@ -35,7 +35,6 @@ function LedgerApp({
                     key={activePage.id}
                     activePage={activePage}
                     updatePage={updatePage}
-                    toggleSidebar={undefined}
                     pages={pages}
                     activePageId={activePage.id}
                     setActivePageId={setActivePageId}
@@ -47,47 +46,34 @@ function LedgerApp({
 }
 
 function App() {
-    const [pages, setPages] = useState<Page[]>(() => {
-        const savedPages = localStorage.getItem("pages");
-        return savedPages ? JSON.parse(savedPages) : INITIAL_PAGES;
-    });
+    // Remove localStorage and always start with INITIAL_PAGES
+    const [pages, setPages] = useState<Page[]>(INITIAL_PAGES);
+    const [activePageId, setActivePageId] = useState<string>(
+        INITIAL_PAGES[0].id
+    );
 
-    const [activePageId, setActivePageId] = useState<string>(() => {
-        const savedActivePageId = localStorage.getItem("activePageId");
-        return savedActivePageId || INITIAL_PAGES[0].id;
-    });
-
-    useEffect(() => {
-        localStorage.setItem("pages", JSON.stringify(pages));
-    }, [pages]);
-
-    useEffect(() => {
-        localStorage.setItem("activePageId", activePageId);
-    }, [activePageId]);
+    // Remove localStorage persistence effects
+    // Data will reset on every refresh
 
     const addPage = (name: string) => {
         const newPage: Page = {
             id: `${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
             name,
             columns: [
-                { id: "col-sno", name: "S.No", type: "text", width: 10 },
-                { id: "col-a", name: "Item", type: "text", width: 50 },
+                { id: "col-sno", name: "S.No", type: "text", width: 80 },
+                { id: "col-a", name: "Item", type: "text", width: 220 },
                 {
                     id: "col-c",
                     name: "Total Amount",
                     type: "number",
-                    width: 50,
+                    width: 220,
                 },
             ],
-            entries: Array(10)
-                .fill(0)
-                .map((_, index) => ({
-                    id: index + 1,
-                    data: { "col-a": "", "col-c": null },
-                })),
+            entries: [], // Completely empty entries array
         };
         setPages((prev) => [...prev, newPage]);
         setActivePageId(newPage.id);
+        return newPage; // Return the created page for navigation
     };
 
     const deletePage = (pageId: string) => {
@@ -109,6 +95,7 @@ function App() {
                         <HomePage
                             pages={pages}
                             onRowClick={(id) => setActivePageId(id)}
+                            onAddPage={addPage}
                         />
                     }
                 />
