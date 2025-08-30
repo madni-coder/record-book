@@ -11,12 +11,13 @@ module.exports = {
         extend: {},
     },
     plugins: [require("daisyui")],
-    daisyui: {
-        themes: ["cupcake"],
-        darkTheme: "cupcake",
-        base: true,
-        styled: true,
-        utils: true,
-        logs: true,
-    },
+   // tailwind.config.js
+daisyui: {
+    themes: ["cupcake", "night"], // Remove night if not needed
+    darkTheme: "night", // This will be used for prefers-color-scheme: dark
+    base: true,
+    styled: true,
+    utils: true,
+    logs: true,
+},
 };
